@@ -27,21 +27,26 @@ function getRefreshToken() {
   return localStorage.getItem("refreshToken");
 }
 
-async function refreshAccessToken(): Promise<string | null> {
+function setRefreshToken(token: string) {
+  localStorage.setItem("refreshToken", token);
+}
+
+async function refreshAccessToken(): Promise<{ accessToken: string | null; refreshToken: string | null }> {
   const rt = getRefreshToken();
-  if (!rt) return null;
+  if (!rt) return { accessToken: null, refreshToken: null };
 
   const res = await fetch("https://localhost:7145/api/Auth/RefreshToken", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include", 
     body: JSON.stringify({ refreshToken: rt }),
   });
 
-  if (!res.ok) return null;
+  if (!res.ok) return { accessToken: null, refreshToken: null };
 
   const data: any = await res.json().catch(() => null);
 
-  const newToken =
+  const newAccessToken =
     data?.accessToken ||
     data?.AccessToken ||
     data?.token ||
@@ -51,34 +56,62 @@ async function refreshAccessToken(): Promise<string | null> {
     data?.result?.accessToken ||
     data?.result?.AccessToken;
 
-  return newToken ? String(newToken) : null;
+  const newRefreshToken =
+    data?.refreshToken ||
+    data?.RefreshToken ||
+    data?.data?.refreshToken ||
+    data?.data?.RefreshToken ||
+    data?.result?.refreshToken ||
+    data?.result?.RefreshToken;
+
+  return {
+    accessToken: newAccessToken ? String(newAccessToken) : null,
+    refreshToken: newRefreshToken ? String(newRefreshToken) : null,
+  };
 }
 
-/** ✅ أبسط تايمر: كل 10 دقائق يحاول يعمل Refresh */
+async function runRefreshOnce(): Promise<boolean> {
+  if (isRefreshing) return false;
+
+  if (!getRefreshToken()) return false;
+
+  isRefreshing = true;
+
+  const { accessToken, refreshToken } = await refreshAccessToken();
+
+  if (accessToken) {
+    setAccessToken(accessToken);
+    if (refreshToken) setRefreshToken(refreshToken); // ✅ لو السيرفر بيرجع ريفرش جديد
+    notifyRefreshWaiters(true);
+    isRefreshing = false;
+    return true;
+  }
+
+  notifyRefreshWaiters(false);
+  isRefreshing = false;
+  return false;
+}
+
+/** ✅ تايمر: يشغل Refresh فوراً + كل 10 دقائق */
 export function startRefreshTokenTimer() {
   if (typeof window === "undefined") return;
-  if (refreshIntervalId) return; // لا تشغله مرتين
+  if (refreshIntervalId) return;
+
+  // ✅ جرّب مرة فوراً (عشان ما تستنى 10 دقايق وتفكر "مش شغال")
+  runRefreshOnce().then((ok) => {
+    if (!ok) {
+      // ما بنعمل redirect هون، بس منوقف التايمر إذا فشل
+      stopRefreshTokenTimer();
+    }
+  });
 
   refreshIntervalId = window.setInterval(async () => {
-    // إذا في refresh شغال أو ما في refresh token ما تسوي شيء
     if (isRefreshing) return;
     if (!getRefreshToken()) return;
 
-    isRefreshing = true;
-
-    const newToken = await refreshAccessToken();
-
-    if (newToken) {
-      setAccessToken(newToken);
-      notifyRefreshWaiters(true);
-    } else {
-      notifyRefreshWaiters(false);
-      // إذا فشل الريفرش غالباً انتهت الجلسة، وقف التايمر
-      stopRefreshTokenTimer();
-    }
-
-    isRefreshing = false;
-  }, 10 * 60 * 1000); // 10 دقائق
+    const ok = await runRefreshOnce();
+    if (!ok) stopRefreshTokenTimer();
+  }, 10 * 60 * 1000);
 }
 
 export function stopRefreshTokenTimer() {
@@ -94,7 +127,6 @@ export async function apiFetch(
   router?: { push: (path: string) => void }
 ) {
   const accessToken = getAccessToken();
-
   const headers = new Headers(init.headers || {});
 
   if (!headers.has("Content-Type") && !(init.body instanceof FormData)) {
@@ -113,7 +145,6 @@ export async function apiFetch(
 
   if (res.status !== 401) return res;
 
-  // لو في refresh شغال، استنى
   if (isRefreshing) {
     const ok = await waitForRefresh();
     if (!ok) {
@@ -126,25 +157,14 @@ export async function apiFetch(
     return doRequest();
   }
 
-  // ابدأ refresh جديد
-  isRefreshing = true;
+  const ok = await runRefreshOnce();
 
-  const newToken = await refreshAccessToken();
-
-  if (newToken) {
-    setAccessToken(newToken);
-    notifyRefreshWaiters(true);
-  } else {
-    notifyRefreshWaiters(false);
-  }
-
-  isRefreshing = false;
-
-  if (!newToken) {
+  if (!ok) {
     router?.push?.("/signin");
     return res;
   }
 
-  headers.set("Authorization", `Bearer ${newToken}`);
+  const newToken = getAccessToken();
+  if (newToken) headers.set("Authorization", `Bearer ${newToken}`);
   return doRequest();
 }

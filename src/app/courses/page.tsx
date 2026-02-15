@@ -7,7 +7,18 @@ import SingleCourse from "@/components/Courses/SingleCourse";
 export default function CoursesPage() {
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const router = useRouter();
+
+  // ✅ أبسط تحقق: roleId === 1 من localStorage
+  useEffect(() => {
+    const roleId =
+      localStorage.getItem("roleId") ||
+      localStorage.getItem("RoleId");
+
+    setIsAdmin(Number(roleId) === 1);
+  }, []);
 
   useEffect(() => {
     fetch("https://localhost:7145/api/courses/GetAllCourses")
@@ -25,14 +36,15 @@ export default function CoursesPage() {
       <div className="mb-10 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Courses</h1>
 
-        <button
-          style={{ marginRight: "45px" }}
-          onClick={() => router.push("/courses/create")}
-          className="rounded bg-primary px-5 py-2 text-white hover:bg-primary/90"
-        >
-          + Add Course
-        </button>
-
+        {isAdmin && (
+          <button
+            style={{ marginRight: "45px" }}
+            onClick={() => router.push("/courses/create")}
+            className="rounded bg-primary px-5 py-2 text-white hover:bg-primary/90"
+          >
+            + Add Course
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
