@@ -2,6 +2,7 @@
 
 let isRefreshing = false;
 let refreshWaiters: Array<(ok: boolean) => void> = [];
+let refreshIntervalId: number | null = null;
 
 function notifyRefreshWaiters(ok: boolean) {
   refreshWaiters.forEach((cb) => cb(ok));
@@ -23,12 +24,11 @@ function setAccessToken(token: string) {
 
 function getRefreshToken() {
   if (typeof window === "undefined") return null;
- 
   return localStorage.getItem("refreshToken");
 }
 
 async function refreshAccessToken(): Promise<string | null> {
-  const rt = localStorage.getItem("refreshToken"); 
+  const rt = getRefreshToken();
   if (!rt) return null;
 
   const res = await fetch("https://localhost:7145/api/Auth/RefreshToken", {
@@ -54,6 +54,39 @@ async function refreshAccessToken(): Promise<string | null> {
   return newToken ? String(newToken) : null;
 }
 
+/** ✅ أبسط تايمر: كل 10 دقائق يحاول يعمل Refresh */
+export function startRefreshTokenTimer() {
+  if (typeof window === "undefined") return;
+  if (refreshIntervalId) return; // لا تشغله مرتين
+
+  refreshIntervalId = window.setInterval(async () => {
+    // إذا في refresh شغال أو ما في refresh token ما تسوي شيء
+    if (isRefreshing) return;
+    if (!getRefreshToken()) return;
+
+    isRefreshing = true;
+
+    const newToken = await refreshAccessToken();
+
+    if (newToken) {
+      setAccessToken(newToken);
+      notifyRefreshWaiters(true);
+    } else {
+      notifyRefreshWaiters(false);
+      // إذا فشل الريفرش غالباً انتهت الجلسة، وقف التايمر
+      stopRefreshTokenTimer();
+    }
+
+    isRefreshing = false;
+  }, 10 * 60 * 1000); // 10 دقائق
+}
+
+export function stopRefreshTokenTimer() {
+  if (refreshIntervalId) {
+    clearInterval(refreshIntervalId);
+    refreshIntervalId = null;
+  }
+}
 
 export async function apiFetch(
   input: string,
@@ -80,6 +113,7 @@ export async function apiFetch(
 
   if (res.status !== 401) return res;
 
+  // لو في refresh شغال، استنى
   if (isRefreshing) {
     const ok = await waitForRefresh();
     if (!ok) {
@@ -92,6 +126,7 @@ export async function apiFetch(
     return doRequest();
   }
 
+  // ابدأ refresh جديد
   isRefreshing = true;
 
   const newToken = await refreshAccessToken();
