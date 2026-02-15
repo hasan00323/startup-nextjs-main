@@ -275,12 +275,11 @@ const SigninPage = () => {
 
                   <div className="mt-3 flex items-center justify-between">
                     <span className="text-body-color dark:text-body-color-dark text-xs">
-                      RoleId: <span className="font-semibold">1=Admin</span> |{" "}
-                      <span className="font-semibold">2=Student</span>
+                      If you forgot your password, you can reset it.
                     </span>
 
                     <Link
-                      href="/reset-password"
+                      href="/auth/resetPassword"
                       className="text-primary text-xs font-semibold hover:underline"
                     >
                       Forgot password?

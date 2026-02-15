@@ -303,24 +303,7 @@ export default function StudentProfilePage() {
           <DividerTitle title="Student Information" />
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <InfoCard
-              label="Student ID"
-              value={String(studentId)}
-              icon={
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M4 7.5 12 3l8 4.5-8 4.5L4 7.5Z"
-                    fill="currentColor"
-                    opacity="0.9"
-                  />
-                  <path
-                    d="M4 10.5 12 15l8-4.5V17l-8 4-8-4v-6.5Z"
-                    fill="currentColor"
-                    opacity="0.35"
-                  />
-                </svg>
-              }
-            />
+            
 
             <InfoCard
               label="University Name"
@@ -462,31 +445,7 @@ export default function StudentProfilePage() {
               }
             />
 
-            <InfoCard
-              label="Role"
-              value={String(role)}
-              icon={
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 2 20 6v6c0 5-3.4 9.3-8 10-4.6-.7-8-5-8-10V6l8-4Z"
-                    fill="currentColor"
-                    opacity="0.35"
-                  />
-                  <path
-                    d="M12 6v10"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    opacity="0.9"
-                  />
-                  <path
-                    d="M8.5 10.5h7"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    opacity="0.9"
-                  />
-                </svg>
-              }
-            />
+           
           </div>
         </div>
       </div>
