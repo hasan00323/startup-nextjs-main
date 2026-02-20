@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 const SingleEnrollment = ({ enrollment }: { enrollment: any }) => {
-  // مرونة بالـ ids
   const enrollmentId =
     enrollment?.enrollmentId ??
     enrollment?.EnrollmentId ??
@@ -32,13 +31,11 @@ const SingleEnrollment = ({ enrollment }: { enrollment: any }) => {
         dark:hover:bg-white/10
       "
     >
-      {/* الكرت كله clickable */}
       <Link
         href={studentId ? `/enrollments/student/${studentId}` : "/enrollments"}
         className="block"
       >
         <div className="p-6 sm:p-7">
-          {/* Top row */}
           <div className="mb-5 flex items-start justify-between gap-4">
             <div className="min-w-0">
               <h3 className="truncate text-lg font-extrabold text-black dark:text-white">
@@ -49,7 +46,6 @@ const SingleEnrollment = ({ enrollment }: { enrollment: any }) => {
               </p>
             </div>
 
-            {/* mini badge */}
             <span
               className="
                 inline-flex shrink-0 items-center gap-2
@@ -70,7 +66,6 @@ const SingleEnrollment = ({ enrollment }: { enrollment: any }) => {
             </span>
           </div>
 
-          {/* Details */}
           <div className="space-y-2">
             <p className="text-sm text-body-color dark:text-body-color-dark">
               Student:{" "}
@@ -87,7 +82,6 @@ const SingleEnrollment = ({ enrollment }: { enrollment: any }) => {
             </p>
           </div>
 
-          {/* Footer actions */}
           <div className="mt-6 flex items-center justify-between gap-3">
             <span
               className="
@@ -102,7 +96,6 @@ const SingleEnrollment = ({ enrollment }: { enrollment: any }) => {
               <span className="opacity-70">→</span>
             </span>
 
-            {/* Delete button (لا يخلي الكرت يفتح) */}
             {enrollmentId && (
               <Link
                 href={`/enrollments/delete/${enrollmentId}`}

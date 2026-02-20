@@ -29,7 +29,6 @@ const UpdateAdminProfilePage = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ success banner
   const [success, setSuccess] = useState<string | null>(null);
 
   const token = useMemo(() => {
@@ -37,7 +36,6 @@ const UpdateAdminProfilePage = () => {
     return localStorage.getItem("token");
   }, []);
 
-  // ✅ Load current admin profile to prefill form
  useEffect(() => {
   if (!token) {
     router.push("/signin");
@@ -160,10 +158,8 @@ const UpdateAdminProfilePage = () => {
         throw new Error(t || `Update failed (${res.status})`);
       }
 
-      // ✅ Green success instead of alert
       setSuccess("Profile updated successfully.");
 
-      // ✅ Redirect after a short delay (and pass flag to profile page)
       setTimeout(() => {
         router.push("/admin/profile?updated=1");
       }, 1200);
@@ -207,7 +203,6 @@ const UpdateAdminProfilePage = () => {
 
   return (
     <Shell>
-      {/* Icon */}
       <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path
@@ -225,14 +220,12 @@ const UpdateAdminProfilePage = () => {
         Update your account details then save.
       </p>
 
-      {/* ✅ Green success */}
       {success && (
         <div className="mb-5 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-700 dark:text-green-400">
           {success}
         </div>
       )}
 
-      {/* ❌ Red error */}
       {error && (
         <div className="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
           {error}
@@ -240,7 +233,6 @@ const UpdateAdminProfilePage = () => {
       )}
 
       <form onSubmit={onSubmit} className="space-y-5">
-        {/* FullName */}
         <div>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Full Name
@@ -274,7 +266,6 @@ const UpdateAdminProfilePage = () => {
           </div>
         </div>
 
-        {/* Email */}
         <div>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Email
@@ -304,7 +295,6 @@ const UpdateAdminProfilePage = () => {
           </div>
         </div>
 
-        {/* Phone */}
         <div>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Phone Number
@@ -339,7 +329,6 @@ const UpdateAdminProfilePage = () => {
           </div>
         </div>
 
-        {/* Actions */}
         <button
           type="submit"
           disabled={saving || !!success}

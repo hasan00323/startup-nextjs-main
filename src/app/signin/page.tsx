@@ -3,138 +3,120 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { apiFetch } from "@/lib/api";
+import { startRefreshTokenTimer } from "@/lib/api";
 
 const SigninPage = () => {
-  const router = useRouter();
+const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState<string | null>(null);
 
-  const canSubmit = useMemo(
-    () => email.trim().length > 0 && password.trim().length > 0 && !loading,
-    [email, password, loading]
-  );
+const canSubmit = useMemo(
+  () => email.trim().length > 0 && password.trim().length > 0 && !loading,
+  [email, password, loading]
+);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    setLoading(true);
-    setError(null);
+  setLoading(true);
+  setError(null);
 
-    try {
-      const res = await apiFetch(
-        "https://localhost:7145/api/Auth/Login",
-        {
-          method: "POST",
-          body: JSON.stringify({ email, password }),
-        },
-        router
-      );
+  try {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("roleId");
+      localStorage.removeItem("fullName");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("refreshToken");
+    }
 
-      if (!res.ok) {
-        let msg = `Login failed (${res.status})`;
-        try {
-          const errJson = await res.json();
-          msg = errJson?.message || errJson?.error || msg;
-        } catch {
-          const t = await res.text().catch(() => "");
-          if (t) msg = t;
-        }
-        throw new Error(msg);
+    const res = await fetch("https://localhost:7145/api/Auth/Login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", 
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!res.ok) {
+      let msg = `Login failed (${res.status})`;
+      try {
+        const errJson = await res.json();
+        msg = errJson?.message || errJson?.error || errJson?.title || msg;
+      } catch {
+        const t = await res.text().catch(() => "");
+        if (t) msg = t;
       }
+      throw new Error(msg);
+    }
 
-      const data: any = await res.json();
+    const data: any = await res.json();
 
-      // ===== Access Token =====
-      const token =
-        data?.accessToken ||
-        data?.AccessToken ||
-        data?.token ||
-        data?.Token ||
-        data?.data?.accessToken ||
-        data?.data?.AccessToken ||
-        data?.result?.accessToken ||
-        data?.result?.AccessToken;
+    const root = data?.value ?? data?.data ?? data?.result ?? data;
 
-      if (!token) {
-        throw new Error("Login succeeded but AccessToken is missing.");
-      }
+    const token =
+      root?.accessToken ??
+      root?.AccessToken ??
+      root?.token ??
+      root?.Token ??
+      null;
 
-      // ===== RoleId =====
-      const roleIdRaw =
-        data?.roleId ??
-        data?.RoleId ??
-        data?.user?.roleId ??
-        data?.user?.RoleId ??
-        data?.data?.roleId ??
-        data?.data?.RoleId ??
-        data?.result?.roleId ??
-        data?.result?.RoleId ??
-        null;
+    if (!token) {
+      throw new Error("Login succeeded but AccessToken is missing.");
+    }
 
-      const roleId = roleIdRaw !== null ? Number(roleIdRaw) : null;
-      if (!roleId || Number.isNaN(roleId)) {
-        throw new Error("Login succeeded but RoleId is missing/invalid.");
-      }
+    const roleIdRaw =
+      root?.roleId ??
+      root?.RoleId ??
+      root?.user?.roleId ??
+      root?.user?.RoleId ??
+      null;
 
-      // ===== FullName =====
-      const fullName =
-        data?.fullName ||
-        data?.FullName ||
-        data?.user?.fullName ||
-        data?.user?.FullName ||
-        data?.data?.fullName ||
-        data?.data?.FullName ||
-        data?.result?.fullName ||
-        data?.result?.FullName ||
-        "";
+    const roleId = roleIdRaw !== null ? Number(roleIdRaw) : null;
+    if (roleId === null || Number.isNaN(roleId)) {
+      throw new Error("Login succeeded but RoleId is missing/invalid.");
+    }
 
-      // ===== UserId =====
-      const userId =
-        data?.userId ??
-        data?.UserId ??
-        data?.user?.userId ??
-        data?.user?.UserId ??
-        data?.data?.userId ??
-        data?.data?.UserId ??
-        data?.result?.userId ??
-        data?.result?.UserId ??
-        null;
+    const fullName =
+      root?.fullName ??
+      root?.FullName ??
+      root?.user?.fullName ??
+      root?.user?.FullName ??
+      "";
 
-      const refreshToken =
-        data?.refreshToken ||
-        data?.RefreshToken ||
-        data?.data?.refreshToken ||
-        data?.data?.RefreshToken ||
-        data?.result?.refreshToken ||
-        data?.result?.RefreshToken;
+    const userIdRaw =
+      root?.userId ??
+      root?.UserId ??
+      root?.user?.userId ??
+      root?.user?.UserId ??
+      null;
 
-      if (refreshToken) localStorage.setItem("refreshToken", String(refreshToken));
-
-
-      // ===== Store =====
+    if (typeof window !== "undefined") {
       localStorage.setItem("token", String(token));
       localStorage.setItem("roleId", String(roleId));
 
-      if (fullName) localStorage.setItem("fullName", String(fullName));
-      else localStorage.removeItem("fullName");
+      if (fullName && String(fullName).trim().length > 0)
+        localStorage.setItem("fullName", String(fullName));
+      else
+        localStorage.removeItem("fullName");
 
-      if (userId !== null && userId !== undefined)
-        localStorage.setItem("userId", String(userId));
-      else localStorage.removeItem("userId");
-
-      // ✅ أهم سطر: replace مش push
-      router.replace("/");
-    } catch (err: any) {
-      setError(err?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
+      if (userIdRaw !== null && userIdRaw !== undefined)
+        localStorage.setItem("userId", String(userIdRaw));
+      else
+        localStorage.removeItem("userId");
     }
-  };
+   startRefreshTokenTimer();   
+    router.replace("/");
+  } catch (err: any) {
+    setError(err?.message || "Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
 
   return (
@@ -142,7 +124,6 @@ const SigninPage = () => {
       <div className="container">
         <div className="-mx-4 flex flex-wrap justify-center">
           <div className="w-full px-4">
-            {/* ✅ Smaller + clearer glass */}
             <div
               className="
                 mx-auto
@@ -162,7 +143,6 @@ const SigninPage = () => {
                 sm:p-8
               "
             >
-              {/* Icon */}
               <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path
@@ -187,7 +167,6 @@ const SigninPage = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Email */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
                     Email
@@ -230,7 +209,6 @@ const SigninPage = () => {
                   </p>
                 </div>
 
-                {/* Password */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
                     Password
@@ -287,7 +265,7 @@ const SigninPage = () => {
                   </div>
                 </div>
 
-                {/* Submit */}
+                
                 <button
                   type="submit"
                   disabled={!canSubmit}
@@ -304,7 +282,6 @@ const SigninPage = () => {
                 </button>
               </form>
 
-              {/* Divider */}
               <div className="my-6 flex items-center gap-4">
                 <div className="h-px w-full bg-white/10" />
                 <span className="text-body-color dark:text-body-color-dark text-xs">
@@ -313,7 +290,6 @@ const SigninPage = () => {
                 <div className="h-px w-full bg-white/10" />
               </div>
 
-              {/* Signup CTA */}
               <Link
                 href="/signup"
                 className="

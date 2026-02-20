@@ -22,10 +22,6 @@ const DeleteEnrollmentPage = () => {
   const [open, setOpen] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // (اختياري) لو عندك بيانات محفوظة قبل الانتقال، بتطلعها هون
-  // مثال: خزّن في localStorage قبل ما تروح لصفحة الحذف:
-  // localStorage.setItem("deleteEnrollmentMeta", JSON.stringify({ studentName, courseTitle }))
   const [meta, setMeta] = useState<EnrollmentMeta>({});
 
   useEffect(() => {
@@ -39,12 +35,10 @@ const DeleteEnrollmentPage = () => {
       return;
     }
 
-    // اقرأ meta لو موجودة
     try {
       const raw = localStorage.getItem("deleteEnrollmentMeta");
       if (raw) setMeta(JSON.parse(raw));
     } catch {
-      // ignore
     }
   }, [id, token, router]);
 
@@ -78,7 +72,6 @@ const handleDelete = async () => {
       throw new Error(t || `Failed to delete enrollment (${res.status})`);
     }
 
-    // نظف الـ meta
     localStorage.removeItem("deleteEnrollmentMeta");
 
     router.push("/enrollments");
@@ -92,7 +85,6 @@ const handleDelete = async () => {
   return (
     <section className="relative z-10 min-h-[calc(100vh-120px)] overflow-hidden pt-28 pb-16 md:pt-36"style={{marginBottom:"100px"}}>
       <div className="container">
-        {/* fallback content تحت المودال (لو حبيت) */}
         <div className="mx-auto max-w-[900px]">
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center text-sm text-body-color backdrop-blur-xl dark:bg-white/5 dark:text-body-color-dark">
             Preparing delete confirmation...
@@ -100,17 +92,13 @@ const handleDelete = async () => {
         </div>
       </div>
 
-      {/* Modal */}
       {open && (
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
-          {/* Backdrop */}
           <button
             aria-label="Close"
             onClick={close}
             className="absolute inset-0 bg-black/70 backdrop-blur-[2px]"
           />
-
-          {/* Card */}
           <div
             className="
               relative w-full max-w-[520px]
@@ -124,7 +112,6 @@ const handleDelete = async () => {
             "
             style={{ transform: "translateY(-12px)" }}
           >
-            {/* Icon */}
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/15 ring-1 ring-red-500/25">
               <svg
                 width="22"
@@ -191,7 +178,6 @@ const handleDelete = async () => {
               </div>
             )}
 
-            {/* Actions */}
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
@@ -236,7 +222,6 @@ const handleDelete = async () => {
               </button>
             </div>
 
-            {/* Small hint */}
             <p className="mt-5 text-center text-xs text-white/50">
               Enrollment ID: <span className="font-semibold">{id}</span>
             </p>

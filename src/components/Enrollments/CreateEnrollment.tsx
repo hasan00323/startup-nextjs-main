@@ -89,7 +89,6 @@ const CreateEnrollmentPage = () => {
       <div className="container">
         <div className="-mx-4 flex flex-wrap justify-center">
           <div className="w-full px-4">
-            {/* Glass Card */}
             <div
               className="
                 mx-auto
@@ -106,7 +105,6 @@ const CreateEnrollmentPage = () => {
                 sm:px-10 sm:py-10
               "
             >
-              {/* Header */}
               <div className="mb-7 text-center">
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary dark:bg-white/10 dark:text-white">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -127,7 +125,6 @@ const CreateEnrollmentPage = () => {
                 </p>
               </div>
 
-              {/* Alerts */}
               {error && (
                 <div className="mb-5 rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
                   {error}
@@ -141,7 +138,6 @@ const CreateEnrollmentPage = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Student ID */}
                 <div>
                   <label className={labelClass}>Student ID</label>
                   <input
@@ -158,7 +154,6 @@ const CreateEnrollmentPage = () => {
                   </p>
                 </div>
 
-                {/* Course ID */}
                 <div>
                   <label className={labelClass}>Course ID</label>
                   <input
@@ -175,7 +170,6 @@ const CreateEnrollmentPage = () => {
                   </p>
                 </div>
 
-                {/* Created At */}
                 <div>
                   <label className={labelClass}>Created At</label>
                   <input
@@ -190,7 +184,6 @@ const CreateEnrollmentPage = () => {
                   </p>
                 </div>
 
-                {/* Actions */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                   <button
                     type="submit"
@@ -238,7 +231,6 @@ const CreateEnrollmentPage = () => {
                   </button>
                 </div>
 
-                {/* Hint */}
                 <p className="pt-1 text-center text-xs text-body-color dark:text-body-color-dark">
                   Tip: After saving, you’ll be redirected to the enrollments list.
                 </p>

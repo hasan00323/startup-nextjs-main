@@ -1,14 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 
 type Enrollment = any;
 
-/* =========================
-   UI helpers (same template classes)
-========================= */
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <section
@@ -84,12 +81,10 @@ const MyEnrollmentsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const token = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("token");
-  }, []);
-
   useEffect(() => {
+    const token =
+      typeof window === "undefined" ? null : localStorage.getItem("token");
+
     if (!token) {
       setError("You must sign in first.");
       setLoading(false);
@@ -148,7 +143,7 @@ const MyEnrollmentsPage = () => {
       })
       .catch((e) => setError(e?.message || "Failed to load"))
       .finally(() => setLoading(false));
-  }, [token, router]);
+  }, [router]);
 
   if (loading) {
     return (
@@ -241,16 +236,16 @@ const MyEnrollmentsPage = () => {
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {enrollments.map((en: any, index: number) => {
-            // ✅ الباك اند بيرجع CourseResponseDto => CourseId
             const courseId =
               en?.courseId ?? en?.CourseId ?? en?.id ?? en?.Id ?? "";
 
             const key = String(courseId || index);
 
-            // ✅ الداتا نفسها هي CourseResponseDto (مش enrollment object)
             const course = en?.course ?? en?.Course ?? en;
 
-            const canView = Boolean(course?.CourseId ?? course?.courseId ?? courseId);
+            const canView = Boolean(
+              course?.CourseId ?? course?.courseId ?? courseId
+            );
 
             return (
               <div
@@ -271,7 +266,9 @@ const MyEnrollmentsPage = () => {
                 </h3>
 
                 <p className="text-body-color dark:text-body-color-dark mb-4 text-sm">
-                  {course?.description ?? course?.Description ?? "No description"}
+                  {course?.description ??
+                    course?.Description ??
+                    "No description"}
                 </p>
 
                 <div className="flex flex-wrap items-center justify-between gap-3">

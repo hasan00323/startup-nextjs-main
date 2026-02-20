@@ -22,9 +22,7 @@ const Hero = () => {
                   authentication.
                 </p>
 
-                {/* ✅ Buttons updated (match your template + glass style) */}
                 <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-                  {/* Primary */}
                   <Link
                     href="/signin"
                     className="
@@ -41,7 +39,6 @@ const Hero = () => {
                     🚀 Get Started
                   </Link>
 
-                  {/* Secondary Glass */}
                   <Link
                     href="/courses"
                     className="
@@ -65,7 +62,6 @@ const Hero = () => {
                   </Link>
                 </div>
 
-                {/* Optional tiny note under buttons (nice spacing) */}
                 <p className="mt-5 text-xs text-body-color/80 dark:text-body-color-dark/80">
                   Create an account to access your dashboard and enrollments.
                 </p>
@@ -74,7 +70,6 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Background SVGs (unchanged) */}
         <div className="absolute right-0 top-0 z-[-1] opacity-30 lg:opacity-100">
           <svg
             width="450"

@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import ThemeToggler from "./ThemeToggler";
 import { getMenuData } from "./menuData";
-
+import { stopRefreshTokenTimer } from "@/lib/api";
 type RoleName = "Admin" | "Student" | "User";
 
 const roleNameFromId = (roleId: number | null): RoleName => {
@@ -19,11 +19,9 @@ const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Navbar toggle
   const [navbarOpen, setNavbarOpen] = useState(false);
   const navbarToggleHandler = () => setNavbarOpen((s) => !s);
 
-  // Sticky Navbar
   const [sticky, setSticky] = useState(false);
   useEffect(() => {
     const handleStickyNavbar = () => setSticky(window.scrollY >= 80);
@@ -31,24 +29,21 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleStickyNavbar);
   }, []);
 
-  // submenu open index
   const [openIndex, setOpenIndex] = useState(-1);
   const handleSubmenu = (index: number) =>
     setOpenIndex((prev) => (prev === index ? -1 : index));
 
-  // ✅ Auth state
   const [token, setToken] = useState<string | null>(null);
   const [roleId, setRoleId] = useState<number | null>(null);
   const [displayName, setDisplayName] = useState<string>("");
 
-  // ✅ Prevent first-render mismatch / wrong href before localStorage loads
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const t = localStorage.getItem("token");
-    const ridRaw = localStorage.getItem("roleId"); // must be stored in login
+    const ridRaw = localStorage.getItem("roleId");
     const rid = ridRaw ? Number(ridRaw) : null;
 
     const n =
@@ -66,30 +61,36 @@ const Header = () => {
   const isAuthed = !!token;
   const roleName = roleNameFromId(roleId);
 
-  // ✅ profile path (Admin vs Student/User)
   const profileHref =
     roleName === "Admin" ? "/admin/profile" : "/students/profile";
 
-  // ✅ menu dynamic
   const menuData = useMemo(
     () => getMenuData(roleId, isAuthed),
     [roleId, isAuthed]
   );
+const logout = async () => {
+  try {
+    await fetch("https://localhost:7145/api/Auth/Logout", {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch {
+  }
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("roleId");
-    localStorage.removeItem("fullName");
-    localStorage.removeItem("username");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("refreshToken");
+  localStorage.removeItem("token");
+  localStorage.removeItem("roleId");
+  localStorage.removeItem("fullName");
+  localStorage.removeItem("username");
+  localStorage.removeItem("userId");
 
-    setToken(null);
-    setRoleId(null);
-    setDisplayName("");
+  setToken(null);
+  setRoleId(null);
+  setDisplayName("");
 
-    router.push("/");
-  };
+  stopRefreshTokenTimer();
+
+  router.push("/signin");
+};
 
   const closeMobileNav = () => {
     setNavbarOpen(false);
@@ -106,7 +107,6 @@ const Header = () => {
     >
       <div className="container">
         <div className="relative -mx-4 flex items-center justify-between">
-          {/* Logo */}
           <div className="w-60 max-w-full px-4 xl:mr-12">
             <Link
               href="/"
@@ -134,7 +134,6 @@ const Header = () => {
 
           <div className="flex w-full items-center justify-between px-4">
             <div>
-              {/* Mobile Toggler */}
               <button
                 onClick={navbarToggleHandler}
                 id="navbarToggler"
@@ -158,7 +157,6 @@ const Header = () => {
                 />
               </button>
 
-              {/* Nav */}
               <nav
                 id="navbarCollapse"
                 className={`navbar border-body-color/50 dark:border-body-color/20 dark:bg-dark absolute right-0 z-30 w-[270px] rounded-xl border-[.5px] bg-white/90 px-6 py-4 backdrop-blur-xl duration-300 lg:visible lg:static lg:w-auto lg:border-none lg:!bg-transparent lg:p-0 lg:opacity-100 ${
@@ -226,7 +224,6 @@ const Header = () => {
                   ))}
                 </ul>
 
-                {/* ✅ Mobile auth actions */}
                 {!mounted ? null : !isAuthed ? (
                   <div className="mt-4 flex flex-col gap-2 md:hidden">
                     <Link
@@ -313,9 +310,7 @@ const Header = () => {
               </nav>
             </div>
 
-            {/* Right side */}
             <div className="flex items-center justify-end pr-16 lg:pr-0">
-              {/* ✅ Desktop guest buttons */}
               {!mounted ? null : !isAuthed ? (
                 <div className="hidden items-center gap-3 md:flex">
                   <Link
@@ -358,7 +353,6 @@ const Header = () => {
                   </Link>
                 </div>
               ) : (
-                // ✅ Logged-in User Menu (Desktop)
                 <div className="group relative hidden md:block">
                   <button
                     type="button"
@@ -404,7 +398,6 @@ const Header = () => {
                   </button>
 
                   <div className="dark:bg-dark invisible absolute right-0 top-[110%] w-[240px] rounded-2xl border border-white/10 bg-white/80 p-4 opacity-0 shadow-lg backdrop-blur-xl transition-all duration-200 group-hover:visible group-hover:top-full group-hover:opacity-100 dark:bg-[#0B1220]/70">
-                    {/* ✅ FIXED: Student goes to /students/profile */}
                     <Link
                       href={profileHref}
                       className="text-dark hover:text-primary block rounded-lg px-3 py-2.5 text-sm dark:text-white/70 dark:hover:text-white"

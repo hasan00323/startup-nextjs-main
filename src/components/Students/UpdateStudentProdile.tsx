@@ -11,7 +11,7 @@ type StudentProfile = {
   universityName?: string;
   UniversityName?: string;
 
-  birthDate?: string; // ISO
+  birthDate?: string; 
   BirthDate?: string;
 
   userId?: number | string;
@@ -34,7 +34,7 @@ type UpdateStudentProfileRequest = {
   fullName: string;
   phoneNumber: string;
   universityName: string;
-  birthDate: string; // yyyy-mm-dd
+  birthDate: string; 
 };
 
 const GET_PROFILE_URL = "https://localhost:7145/api/Users/GetStudentProfile";
@@ -108,14 +108,12 @@ function normalizeToDateInput(value?: string) {
 }
 
 async function readErrorMessage(res: Response) {
-  // يدعم ProblemDetails + ModelState errors
   try {
     const ct = res.headers.get("content-type") || "";
     if (ct.includes("application/json")) {
       const j: any = await res.json().catch(() => null);
       if (!j) return `Failed (${res.status})`;
 
-      // ASP.NET ProblemDetails
       if (j?.title && j?.errors) {
         const firstKey = Object.keys(j.errors)[0];
         const firstErr = Array.isArray(j.errors[firstKey]) ? j.errors[firstKey][0] : null;
@@ -146,7 +144,7 @@ function LoadingOverlay({ text }: { text: string }) {
         </div>
         <p className="text-sm font-semibold text-white">{text}</p>
       </div>
-      <div className="opacity-40 pointer-events-none select-none">{/* spacer */}</div>
+      <div className="opacity-40 pointer-events-none select-none"></div>
     </div>
   );
 }
@@ -262,7 +260,6 @@ export default function UpdateStudentProfilePage() {
       router
     );
 
-    // 405 => fallback to POST
     if (res.status === 405) {
       res = await apiFetch(
         UPDATE_PROFILE_URL,
@@ -352,7 +349,6 @@ export default function UpdateStudentProfilePage() {
       <div className="relative">
         {saving ? <LoadingOverlay text="Saving changes..." /> : null}
 
-        {/* Header */}
         <div className="mb-6 text-center">
           <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -372,7 +368,6 @@ export default function UpdateStudentProfilePage() {
           </p>
         </div>
 
-        {/* Alerts */}
         {error ? (
           <div className="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
             {error}
@@ -385,9 +380,7 @@ export default function UpdateStudentProfilePage() {
           </div>
         ) : null}
 
-        {/* Form */}
         <form onSubmit={onSubmit} className="space-y-5">
-          {/* Layout improved: two columns on desktop */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Full Name">
               <input
@@ -475,7 +468,6 @@ export default function UpdateStudentProfilePage() {
             </Field>
           </div>
 
-          {/* Buttons */}
           <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
               type="button"

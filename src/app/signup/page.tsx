@@ -24,7 +24,6 @@ const SignupPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ Glassy input classes (same vibe as your navbar)
   const inputClass = useMemo(
     () =>
       `
@@ -120,7 +119,6 @@ const SignupPage = () => {
       <div className="container">
         <div className="-mx-4 flex flex-wrap justify-center">
           <div className="w-full px-4">
-            {/* ✅ Smaller, glassy, curved card */}
             <div
               className="
                 mx-auto
@@ -152,7 +150,6 @@ const SignupPage = () => {
                 </div>
               )}
 
-              {/* ✅ Two-column layout on md, one-column on mobile */}
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="md:col-span-2">
@@ -246,7 +243,6 @@ const SignupPage = () => {
                   </div>
                 </div>
 
-                {/* ✅ checkbox block (glassy) */}
                 <label className="mt-1 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm text-body-color shadow-sm backdrop-blur-xl transition hover:bg-white/15 dark:border-white/10 dark:bg-white/5 dark:text-body-color-dark dark:hover:bg-white/10">
                   <input
                     type="checkbox"
@@ -267,7 +263,6 @@ const SignupPage = () => {
                   </span>
                 </label>
 
-                {/* ✅ Button */}
                 <button
                   type="submit"
                   disabled={loading}
@@ -298,7 +293,6 @@ const SignupPage = () => {
         </div>
       </div>
 
-      {/* Background SVG (kept from template) */}
       <div className="absolute top-0 left-0 z-[-1]">
         <svg
           width="1440"

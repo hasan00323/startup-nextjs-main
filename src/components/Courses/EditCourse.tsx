@@ -211,7 +211,6 @@ export default function EditCoursePage() {
 
   return (
     <Shell>
-      {/* Icon */}
       <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path
@@ -238,7 +237,6 @@ export default function EditCoursePage() {
       )}
 
       <form onSubmit={save} className="space-y-5">
-        {/* Title */}
         <div>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Course Title
@@ -268,7 +266,6 @@ export default function EditCoursePage() {
           </div>
         </div>
 
-        {/* Description */}
         <div>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Description
@@ -289,7 +286,6 @@ export default function EditCoursePage() {
           </div>
         </div>
 
-        {/* Price */}
         <div>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Price
@@ -322,7 +318,6 @@ export default function EditCoursePage() {
           </div>
         </div>
 
-        {/* Dates */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
             <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
@@ -385,7 +380,6 @@ export default function EditCoursePage() {
           </div>
         </div>
 
-        {/* Category */}
         <div>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Category
@@ -422,7 +416,6 @@ export default function EditCoursePage() {
           </div>
         </div>
 
-        {/* Actions */}
         <button
           type="submit"
           disabled={saving}

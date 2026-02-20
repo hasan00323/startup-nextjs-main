@@ -35,7 +35,6 @@ const DeleteCourse = () => {
       }
 
       if (!cancelled) {
-        // تقدر لاحقًا تستبدل alert بـ toast
         alert("Course deleted successfully");
         router.push("/courses");
       }

@@ -5,17 +5,16 @@ import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 
 type StudentProfile = {
-  // student fields
+
   studentId?: number | string;
   StudentId?: number | string;
 
   universityName?: string;
   UniversityName?: string;
 
-  birthDate?: string; // ISO
+  birthDate?: string; 
   BirthDate?: string;
 
-  // user fields
   userId?: number | string;
   UserId?: number | string;
 
@@ -32,9 +31,6 @@ type StudentProfile = {
   UserRole?: string;
 };
 
-/* =========================
-   Shell (OUTSIDE component)
-========================= */
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <section
@@ -263,7 +259,6 @@ export default function StudentProfilePage() {
     );
   }
 
-  // ✅ read values with fallback
   const studentId = profile.studentId ?? profile.StudentId ?? "-";
   const universityName = profile.universityName ?? profile.UniversityName ?? "-";
   const birthDateRaw = profile.birthDate ?? profile.BirthDate;
@@ -276,7 +271,6 @@ export default function StudentProfilePage() {
 
   return (
     <Shell>
-      {/* Header */}
       <div className="mb-6 text-center">
         <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -296,9 +290,7 @@ export default function StudentProfilePage() {
         </p>
       </div>
 
-      {/* Content */}
       <div className="space-y-7">
-        {/* Student Info */}
         <div>
           <DividerTitle title="Student Information" />
 
@@ -353,7 +345,6 @@ export default function StudentProfilePage() {
           </div>
         </div>
 
-        {/* User Info */}
         <div>
           <DividerTitle title="Account Information" />
 
@@ -450,7 +441,6 @@ export default function StudentProfilePage() {
         </div>
       </div>
 
-      {/* Actions */}
       <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <button
           onClick={() => router.push("/")}

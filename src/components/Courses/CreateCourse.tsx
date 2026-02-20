@@ -14,7 +14,6 @@ const CreateCoursePage = () => {
 
   const [price, setPrice] = useState<number>(0);
 
-  // ✅ nice defaults
   const [startDate, setStartDate] = useState<string>(isoLocalNow());
   const [endDate, setEndDate] = useState<string>(isoLocalNow());
 
@@ -38,7 +37,6 @@ const CreateCoursePage = () => {
     return;
   }
 
-  // ✅ simple date validation
   const s = new Date(startDate);
   const en = new Date(endDate);
   if (Number.isNaN(s.getTime()) || Number.isNaN(en.getTime())) {
@@ -92,7 +90,6 @@ const CreateCoursePage = () => {
       <div className="container">
         <div className="-mx-4 flex flex-wrap justify-center">
           <div className="w-full px-4">
-            {/* ✅ Glass card (smaller + nicer width) */}
             <div style={{marginTop:"-40px"}}
               className="
                 mx-auto w-full
@@ -108,7 +105,6 @@ const CreateCoursePage = () => {
                 dark:bg-white/5
               "
             >
-              {/* Header */}
               <div className="mb-6 text-center">
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/15 dark:bg-white/10">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -135,7 +131,6 @@ const CreateCoursePage = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Title */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
                     Course Title
@@ -184,7 +179,6 @@ const CreateCoursePage = () => {
                   </div>
                 </div>
 
-                {/* Description */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
                     Description
@@ -218,7 +212,6 @@ const CreateCoursePage = () => {
                   </div>
                 </div>
 
-                {/* Price + Category */}
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                   <div>
                     <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
@@ -320,7 +313,6 @@ const CreateCoursePage = () => {
                   </div>
                 </div>
 
-                {/* Dates */}
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                   <div>
                     <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
@@ -417,7 +409,6 @@ const CreateCoursePage = () => {
                   </div>
                 </div>
 
-                {/* Actions */}
                 <div className="mt-2 flex flex-col gap-3 sm:flex-row">
                   <button
                     type="submit"

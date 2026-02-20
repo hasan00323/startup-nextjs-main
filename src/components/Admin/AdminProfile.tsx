@@ -145,7 +145,6 @@ const AdminProfilePage = () => {
 
   return (
     <Shell>
-      {/* Icon */}
       <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path

@@ -31,7 +31,6 @@ const SearchCoursePage = () => {
 
     setLoading(true);
     try {
-      // ✅ غيّر اسم البراميتر حسب API عندك: keyword / search / q
       const url = `https://localhost:7145/api/courses/SearchCourse?keyword=${encodeURIComponent(
         keyword.trim()
       )}`;
@@ -60,7 +59,6 @@ const SearchCoursePage = () => {
 
   return (
     <div className="container py-20">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Search Courses</h1>
         <p className="text-body-color dark:text-body-color-dark mt-1 text-sm">
@@ -68,7 +66,6 @@ const SearchCoursePage = () => {
         </p>
       </div>
 
-      {/* Search box */}
       <form
         onSubmit={handleSearch}
         className="shadow-three dark:bg-dark mb-10 rounded-sm bg-white p-6"
@@ -97,7 +94,6 @@ const SearchCoursePage = () => {
         </div>
       </form>
 
-      {/* Results */}
       {loading ? (
         <p className="text-center py-12">Loading...</p>
       ) : results.length === 0 ? (

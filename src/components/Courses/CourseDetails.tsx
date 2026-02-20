@@ -94,7 +94,6 @@ const CourseDetailsPage = () => {
     }
   };
 
-  // ✅ Same spacing as Signin page
   const SectionShell = ({ children }: { children: React.ReactNode }) => (
     <section
       className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[170px] lg:pb-24"
@@ -172,7 +171,6 @@ const CourseDetailsPage = () => {
 
   return (
     <SectionShell>
-      {/* Icon */}
       <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path
@@ -182,8 +180,6 @@ const CourseDetailsPage = () => {
           />
         </svg>
       </div>
-
-      {/* Header */}
       <div className="mb-6 text-center">
         <h1 className="mb-2 break-words text-2xl font-bold text-black dark:text-white">
           {course.title}
@@ -204,14 +200,12 @@ const CourseDetailsPage = () => {
         </div>
       </div>
 
-      {/* Description */}
       <div className="mb-6 rounded-xl border border-white/20 bg-white/10 px-4 py-4 dark:border-white/10 dark:bg-white/5">
         <p className="text-body-color dark:text-body-color-dark text-sm leading-relaxed">
           {course.description || "No description provided."}
         </p>
       </div>
 
-      {/* Info cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-white/20 bg-white/10 px-4 py-4 dark:border-white/10 dark:bg-white/5">
           <p className="text-xs font-semibold text-black dark:text-white">Instructor</p>

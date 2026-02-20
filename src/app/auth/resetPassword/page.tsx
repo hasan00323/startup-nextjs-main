@@ -154,7 +154,6 @@ export default function ResetPasswordPage() {
     }
   };
 
-  // ✅ مهم: قبل mount، رجّع نفس HTML دائمًا (عشان ما يصير mismatch)
   if (!mounted) {
     return (
       <Shell>
@@ -192,7 +191,6 @@ export default function ResetPasswordPage() {
 
   return (
     <Shell>
-      {/* Icon */}
       <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path
@@ -230,7 +228,6 @@ export default function ResetPasswordPage() {
       )}
 
       <form onSubmit={onSubmit} className="space-y-5">
-        {/* Current Password */}
         <div>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Current Password
@@ -250,7 +247,7 @@ export default function ResetPasswordPage() {
 
             <button
               type="button"
-              onMouseDown={(e) => e.preventDefault()} // ✅ يمنع فقدان الفوكس
+              onMouseDown={(e) => e.preventDefault()} 
               onClick={() => setShowCurrent((v) => !v)}
               className="opacity-80 hover:opacity-100"
               aria-label="Toggle current password visibility"
@@ -260,7 +257,6 @@ export default function ResetPasswordPage() {
           </div>
         </div>
 
-        {/* New Password */}
         <div>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             New Password
@@ -278,7 +274,7 @@ export default function ResetPasswordPage() {
 
             <button
               type="button"
-              onMouseDown={(e) => e.preventDefault()} // ✅ يمنع فقدان الفوكس
+              onMouseDown={(e) => e.preventDefault()} 
               onClick={() => setShowNew((v) => !v)}
               className="opacity-80 hover:opacity-100"
               aria-label="Toggle new password visibility"
@@ -292,7 +288,6 @@ export default function ResetPasswordPage() {
           </p>
         </div>
 
-        {/* Actions */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <button
             type="button"

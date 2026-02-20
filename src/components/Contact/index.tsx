@@ -26,7 +26,6 @@ const Contact = () => {
 
               <form>
                 <div className="-mx-4 flex flex-wrap">
-                  {/* Name */}
                   <div className="w-full px-4 md:w-1/2">
                     <div className="mb-6">
                       <label
@@ -45,7 +44,6 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  {/* Email */}
                   <div className="w-full px-4 md:w-1/2">
                     <div className="mb-6">
                       <label
@@ -64,7 +62,6 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  {/* Message */}
                   <div className="w-full px-4">
                     <div className="mb-6">
                       <label
@@ -84,7 +81,6 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  {/* Submit */}
                   <div className="w-full px-4">
                     <button
                       type="submit"
@@ -111,7 +107,6 @@ const Contact = () => {
         </div>
       </div>
 
-      {/* Animation CSS */}
       <style jsx>{`
         .fd-animate {
           opacity: 0;

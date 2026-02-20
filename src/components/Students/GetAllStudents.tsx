@@ -49,7 +49,6 @@ const GetAllStudentsPage = () => {
 
       const data = await res.json();
 
-      // يدعم: array أو { items: [] }
       const arr = Array.isArray(data) ? data : data?.items ?? [];
       if (!Array.isArray(arr)) {
         setStudents([]);
@@ -137,7 +136,6 @@ const GetAllStudentsPage = () => {
 
   return (
     <Shell>
-      {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" style={{marginTop:"70px"}}>
         <div>
           <h1 className="text-2xl font-bold text-black dark:text-white sm:text-3xl">
@@ -161,7 +159,6 @@ const GetAllStudentsPage = () => {
         </button>
       </div>
 
-      {/* Empty */}
       {students.length === 0 ? (
         <div className="rounded-xl border border-white/20 bg-white/10 p-8 text-center text-body-color dark:border-white/10 dark:bg-white/5 dark:text-body-color-dark">
           No students found.

@@ -9,8 +9,8 @@ export const getMenuData = (roleId: number | null, isAuthed: boolean): Menu[] =>
     ];
   }
 
-  const isAdmin = roleId === 1; // ✅ 1 Admin
-  const isStudent = roleId === 2; // ✅ 2 Student
+  const isAdmin = roleId === 1; 
+  const isStudent = roleId === 2;
 
   if (isAdmin) {
     return [
@@ -62,7 +62,6 @@ export const getMenuData = (roleId: number | null, isAuthed: boolean): Menu[] =>
     ];
   }
 
-  // ✅ fallback لأي role ثاني
   return [
     { id: 30, title: "Courses", path: "/courses", newTab: false },
     { id: 31, title: "Support", path: "/contact", newTab: false },

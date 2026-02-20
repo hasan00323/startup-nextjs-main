@@ -16,7 +16,6 @@ const StudentEnrollmentsPage = () => {
 
   const [deletingKey, setDeletingKey] = useState<string | null>(null);
 
-  // ✅ Confirm modal state (بدل confirm())
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selected, setSelected] = useState<{
     key: string;
@@ -71,7 +70,6 @@ const StudentEnrollmentsPage = () => {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studentId, token]);
 
   const studentName =
@@ -149,7 +147,6 @@ const StudentEnrollmentsPage = () => {
   return (
     <section className="relative z-10 overflow-hidden pt-28 pb-20" style={{marginBottom:"100px"}}>
       <div className="container">
-        {/* Header */}
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-3xl font-extrabold text-black dark:text-white">
@@ -190,7 +187,6 @@ const StudentEnrollmentsPage = () => {
           </button>
         </div>
 
-        {/* Empty */}
         {items.length === 0 ? (
           <div className="mx-auto w-full max-w-[720px] rounded-3xl border border-white/15 bg-white/10 p-10 text-center shadow-two backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
             <h3 className="text-lg font-bold text-black dark:text-white">
@@ -257,7 +253,6 @@ const StudentEnrollmentsPage = () => {
         )}
       </div>
 
-      {/* ✅ Glass Confirm Modal */}
       {confirmOpen && selected && (
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
           <div
