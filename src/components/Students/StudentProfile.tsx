@@ -5,14 +5,13 @@ import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 
 type StudentProfile = {
-
   studentId?: number | string;
   StudentId?: number | string;
 
   universityName?: string;
   UniversityName?: string;
 
-  birthDate?: string; 
+  birthDate?: string;
   BirthDate?: string;
 
   userId?: number | string;
@@ -33,15 +32,16 @@ type StudentProfile = {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <section
-      className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[170px] lg:pb-24"
-      style={{ marginTop: "-60px" }}
-    >
-      <div className="container">
-        <div className="-mx-4 flex flex-wrap justify-center">
-          <div className="w-full px-4">
-            <div
-              className="
+    <>
+      <section
+        className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[170px] lg:pb-24 opacity-0 animate-[spSectionIn_.6s_ease-out_forwards]"
+        style={{ marginTop: "-60px" }}
+      >
+        <div className="container">
+          <div className="-mx-4 flex flex-wrap justify-center">
+            <div className="w-full px-4">
+              <div
+                className="
                 mx-auto w-full max-w-[92%] sm:max-w-[680px]
                 rounded-2xl
                 border border-white/20
@@ -53,14 +53,37 @@ function Shell({ children }: { children: React.ReactNode }) {
                 dark:border-white/10
                 dark:bg-white/5
                 dark:ring-white/10
+                opacity-0 animate-[spCardIn_.7s_ease-out_forwards]
               "
-            >
-              {children}
+              >
+                {children}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+      <style>{`
+        @keyframes spSectionIn {
+          0% { opacity: 0; transform: translateY(12px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes spCardIn {
+          0% { opacity: 0; transform: translateY(18px) scale(0.98); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes spItemUp {
+          0% { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+          }
+        }
+      `}</style>
+    </>
   );
 }
 
@@ -89,6 +112,7 @@ function InfoCard({
         transition duration-300
         hover:bg-white/15 hover:border-white/30
         dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10
+        opacity-0 animate-[spItemUp_.6s_ease-out_forwards]
       "
     >
       <div className="flex items-start gap-3">
@@ -113,7 +137,7 @@ function InfoCard({
 
 function LoadingBlock({ text }: { text: string }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 py-10">
+    <div className="flex flex-col items-center justify-center gap-3 py-10 opacity-0 animate-[spItemUp_.6s_ease-out_forwards]">
       <div className="flex items-center gap-2">
         <span className="h-2.5 w-2.5 animate-bounce rounded-full bg-black/60 dark:bg-white/80 [animation-delay:-0.2s]" />
         <span className="h-2.5 w-2.5 animate-bounce rounded-full bg-black/60 dark:bg-white/80 [animation-delay:-0.1s]" />
@@ -128,7 +152,7 @@ function LoadingBlock({ text }: { text: string }) {
 
 function DividerTitle({ title }: { title: string }) {
   return (
-    <div className="mb-3 flex items-center justify-between">
+    <div className="mb-3 flex items-center justify-between opacity-0 animate-[spItemUp_.6s_ease-out_forwards]">
       <h3 className="text-sm font-semibold text-black dark:text-white">
         {title}
       </h3>
@@ -176,7 +200,9 @@ export default function StudentProfilePage() {
           throw new Error(t || `Failed (${res.status})`);
         }
 
-        const data = (await res.json().catch(() => null)) as StudentProfile | null;
+        const data = (await res.json().catch(() => null)) as
+          | StudentProfile
+          | null;
         setProfile(data);
       } catch (e: any) {
         setError(e?.message || "Failed to load.");
@@ -199,23 +225,22 @@ export default function StudentProfilePage() {
   if (error) {
     return (
       <Shell>
-        <h3 className="mb-2 text-center text-xl font-bold text-black dark:text-white">
+        <h3 className="mb-2 text-center text-xl font-bold text-black dark:text-white opacity-0 animate-[spItemUp_.6s_ease-out_forwards]">
           Something went wrong
         </h3>
-
-        <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+        <p className="text-body-color dark:text-body-color-dark mb-6 text-center text-sm opacity-0 animate-[spItemUp_.6s_ease-out_forwards] [animation-delay:120ms]">
           {error}
-        </div>
+        </p>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <button
             onClick={() => router.push("/")}
             className="
-              w-full rounded-xl border border-white/20 bg-white/10
-              px-6 py-3 text-sm font-semibold text-black
-              transition duration-300 hover:bg-white/15
-              dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
-            "
+            rounded-xl border border-white/20 bg-white/10
+            px-6 py-3 text-sm font-semibold text-black
+            transition duration-300 hover:bg-white/15
+            dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
+          "
           >
             Back
           </button>
@@ -223,11 +248,11 @@ export default function StudentProfilePage() {
           <button
             onClick={() => window.location.reload()}
             className="
-              shadow-submit dark:shadow-submit-dark
-              bg-primary hover:bg-primary/90
-              w-full rounded-xl px-6 py-3
-              text-sm font-semibold text-white transition duration-300
-            "
+            shadow-submit dark:shadow-submit-dark
+            bg-primary hover:bg-primary/90
+            rounded-xl px-6 py-3 text-sm font-semibold text-white
+            transition duration-300
+          "
           >
             Retry
           </button>
@@ -236,42 +261,19 @@ export default function StudentProfilePage() {
     );
   }
 
-  if (!profile) {
-    return (
-      <Shell>
-        <div className="text-center text-body-color dark:text-body-color-dark">
-          Profile not found.
-        </div>
+  const studentId = profile?.studentId ?? profile?.StudentId ?? "-";
+  const universityName = profile?.universityName ?? profile?.UniversityName ?? "-";
+  const birthDate = formatDob(profile?.birthDate ?? profile?.BirthDate);
 
-        <button
-          onClick={() => router.push("/")}
-          className="
-            mt-6 block w-full rounded-xl
-            border border-white/20 bg-white/10
-            px-10 py-3.5 text-center text-sm font-semibold text-black
-            transition duration-300 hover:bg-white/15
-            dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
-          "
-        >
-          Back
-        </button>
-      </Shell>
-    );
-  }
-
-  const studentId = profile.studentId ?? profile.StudentId ?? "-";
-  const universityName = profile.universityName ?? profile.UniversityName ?? "-";
-  const birthDateRaw = profile.birthDate ?? profile.BirthDate;
-
-  const userId = profile.userId ?? profile.UserId ?? "-";
-  const fullName = profile.fullName ?? profile.FullName ?? "-";
-  const email = profile.email ?? profile.Email ?? "-";
-  const phone = profile.phoneNumber ?? profile.PhoneNumber ?? "-";
-  const role = profile.userRole ?? profile.UserRole ?? "Student";
+  const userId = profile?.userId ?? profile?.UserId ?? "-";
+  const fullName = profile?.fullName ?? profile?.FullName ?? "-";
+  const email = profile?.email ?? profile?.Email ?? "-";
+  const phone = profile?.phoneNumber ?? profile?.PhoneNumber ?? "-";
+  const role = profile?.userRole ?? profile?.UserRole ?? "-";
 
   return (
     <Shell>
-      <div className="mb-6 text-center">
+      <div className="mb-7 text-center opacity-0 animate-[spItemUp_.6s_ease-out_forwards]">
         <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path
@@ -282,20 +284,51 @@ export default function StudentProfilePage() {
           </svg>
         </div>
 
-        <h1 className="text-2xl font-bold text-black dark:text-white">
+        <h1 className="text-2xl font-bold text-black dark:text-white opacity-0 animate-[spItemUp_.6s_ease-out_forwards] [animation-delay:120ms]">
           Student Profile
         </h1>
-        <p className="text-body-color dark:text-body-color-dark mt-1 text-sm font-medium">
+        <p className="text-body-color dark:text-body-color-dark mt-1 text-sm font-medium opacity-0 animate-[spItemUp_.6s_ease-out_forwards] [animation-delay:200ms]">
           Your student and account information.
         </p>
       </div>
 
-      <div className="space-y-7">
+      <div className="space-y-7 opacity-0 animate-[spItemUp_.6s_ease-out_forwards] [animation-delay:260ms]">
         <div>
           <DividerTitle title="Student Information" />
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            
+            <InfoCard
+              label="Student ID"
+              value={String(studentId)}
+              icon={
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M4 7h16"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.35"
+                  />
+                  <path
+                    d="M4 17h16"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.35"
+                  />
+                  <path
+                    d="M7 10h10"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.9"
+                  />
+                  <path
+                    d="M7 14h6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.9"
+                  />
+                </svg>
+              }
+            />
 
             <InfoCard
               label="University Name"
@@ -303,41 +336,91 @@ export default function StudentProfilePage() {
               icon={
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path
-                    d="M3 9.5 12 4l9 5.5-9 5.5L3 9.5Z"
-                    fill="currentColor"
+                    d="M3 10.5 12 5l9 5.5-9 5.5-9-5.5Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.35"
+                  />
+                  <path
+                    d="M6 12.5V19h12v-6.5"
+                    stroke="currentColor"
+                    strokeWidth="2"
                     opacity="0.9"
                   />
                   <path
-                    d="M6.5 11.5V19h11V11.5l-5.5 3.2-5.5-3.2Z"
-                    fill="currentColor"
-                    opacity="0.35"
+                    d="M10 19v-6h4v6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.9"
                   />
                 </svg>
               }
             />
 
             <InfoCard
-              label="Date of Birth"
-              value={formatDob(birthDateRaw)}
+              label="Birth Date"
+              value={String(birthDate)}
               icon={
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path
-                    d="M7 2v2M17 2v2"
+                    d="M7 3v3"
                     stroke="currentColor"
                     strokeWidth="2"
                     opacity="0.9"
                   />
                   <path
-                    d="M6 4h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"
+                    d="M17 3v3"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.9"
+                  />
+                  <path
+                    d="M4 7h16"
                     stroke="currentColor"
                     strokeWidth="2"
                     opacity="0.35"
                   />
                   <path
-                    d="M3 9h18"
+                    d="M5 7v14h14V7"
                     stroke="currentColor"
                     strokeWidth="2"
+                    opacity="0.35"
+                  />
+                  <path
+                    d="M8 11h2v2H8v-2Z"
+                    fill="currentColor"
                     opacity="0.6"
+                  />
+                  <path
+                    d="M12 11h2v2h-2v-2Z"
+                    fill="currentColor"
+                    opacity="0.6"
+                  />
+                  <path
+                    d="M16 11h2v2h-2v-2Z"
+                    fill="currentColor"
+                    opacity="0.6"
+                  />
+                </svg>
+              }
+            />
+
+            <InfoCard
+              label="User Role"
+              value={String(role)}
+              icon={
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6l-8-4Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.35"
+                  />
+                  <path
+                    d="M9 12l2 2 4-5"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.9"
                   />
                 </svg>
               }
@@ -355,14 +438,21 @@ export default function StudentProfilePage() {
               icon={
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path
-                    d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z"
-                    fill="currentColor"
+                    d="M4 20h16"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    opacity="0.35"
+                  />
+                  <path
+                    d="M7 17c2-3 8-3 10 0"
+                    stroke="currentColor"
+                    strokeWidth="2"
                     opacity="0.9"
                   />
                   <path
-                    d="M4 21a8 8 0 0 1 16 0"
+                    d="M12 5a3 3 0 1 1-3 3 3 3 0 0 1 3-3Z"
                     fill="currentColor"
-                    opacity="0.35"
+                    opacity="0.6"
                   />
                 </svg>
               }
@@ -435,13 +525,11 @@ export default function StudentProfilePage() {
                 </svg>
               }
             />
-
-           
           </div>
         </div>
       </div>
 
-      <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 opacity-0 animate-[spItemUp_.6s_ease-out_forwards] [animation-delay:320ms]">
         <button
           onClick={() => router.push("/")}
           className="

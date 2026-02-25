@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 const Hero = () => {
@@ -11,18 +13,18 @@ const Hero = () => {
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
               <div className="mx-auto max-w-[850px] text-center">
-                <h1 className="mb-5 text-3xl font-extrabold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
+                <h1 className="mb-5 text-3xl font-extrabold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight opacity-0 animate-[fadeInUp_1s_ease-out_forwards]">
                   Future Dev - Online Course Management Platform
                 </h1>
 
-                <p className="mb-10 text-base leading-relaxed text-body-color dark:text-body-color-dark sm:text-lg md:text-xl">
+                <p className="mb-10 text-base leading-relaxed text-body-color dark:text-body-color-dark sm:text-lg md:text-xl opacity-0 animate-[fadeInUp_1.2s_ease-out_forwards]">
                   Manage your courses, enrollments, and students in one place.
                   Future Dev gives instructors and admins a clean dashboard to
                   create courses, track progress, and control access with secure
                   authentication.
                 </p>
 
-                <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+                <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 opacity-0 animate-[fadeInUp_1.4s_ease-out_forwards]">
                   <Link
                     href="/signin"
                     className="
@@ -34,6 +36,7 @@ const Hero = () => {
                       text-base font-semibold text-white
                       transition duration-300
                       active:scale-[0.99]
+                      hover:-translate-y-1
                     "
                   >
                     🚀 Get Started
@@ -54,6 +57,7 @@ const Hero = () => {
                       transition duration-300
                       hover:bg-white/15 hover:border-white/30
                       active:scale-[0.99]
+                      hover:-translate-y-1
                       dark:border-white/10 dark:bg-white/5 dark:text-white
                       dark:hover:bg-white/10 dark:hover:border-white/20
                     "
@@ -62,7 +66,7 @@ const Hero = () => {
                   </Link>
                 </div>
 
-                <p className="mt-5 text-xs text-body-color/80 dark:text-body-color-dark/80">
+                <p className="mt-5 text-xs text-body-color/80 dark:text-body-color-dark/80 opacity-0 animate-[fadeInUp_1.6s_ease-out_forwards]">
                   Create an account to access your dashboard and enrollments.
                 </p>
               </div>
@@ -70,7 +74,7 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="absolute right-0 top-0 z-[-1] opacity-30 lg:opacity-100">
+        <div className="absolute right-0 top-0 z-[-1] opacity-30 lg:opacity-100 animate-[float_8s_ease-in-out_infinite]">
           <svg
             width="450"
             height="556"
@@ -204,7 +208,7 @@ const Hero = () => {
           </svg>
         </div>
 
-        <div className="absolute bottom-0 left-0 z-[-1] opacity-30 lg:opacity-100">
+        <div className="absolute bottom-0 left-0 z-[-1] opacity-30 lg:opacity-100 animate-[float_10s_ease-in-out_infinite]">
           <svg
             width="364"
             height="201"
@@ -308,6 +312,30 @@ const Hero = () => {
           </svg>
         </div>
       </section>
+
+      <style jsx global>{`
+        @keyframes fadeInUp {
+          0% {
+            opacity: 0;
+            transform: translateY(40px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes float {
+          0% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+          100% {
+            transform: translateY(0px);
+          }
+        }
+      `}</style>
     </>
   );
 };

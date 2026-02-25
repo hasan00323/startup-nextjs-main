@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api"; 
+import { apiFetch } from "@/lib/api";
+import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 
 type AdminProfile = {
   userId?: number | string;
@@ -21,6 +23,42 @@ type AdminProfileForm = {
   phoneNumber: string;
 };
 
+const fadeContainer: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.4,
+      ease: [0.16, 1, 0.3, 1],
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const fadeItem: Variants = {
+  hidden: { opacity: 0, x: -18 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.45,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
 const UpdateAdminProfilePage = () => {
   const router = useRouter();
 
@@ -36,57 +74,57 @@ const UpdateAdminProfilePage = () => {
     return localStorage.getItem("token");
   }, []);
 
- useEffect(() => {
-  if (!token) {
-    router.push("/signin");
-    return;
-  }
-
-  let cancelled = false;
-
-  const loadProfile = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      setSuccess(null);
-
-      const res = await apiFetch(
-        "https://localhost:7145/api/Users/SystemAdminProfile",
-        { method: "GET" },
-        router
-      );
-
-      if (!res.ok) {
-        const t = await res.text().catch(() => "");
-        throw new Error(t || `Failed (${res.status})`);
-      }
-
-      const data: AdminProfile = await res.json();
-
-      const fullName = (data?.fullName ?? data?.FullName ?? "") as string;
-      const email = (data?.email ?? data?.Email ?? "") as string;
-      const phoneNumber = (data?.phoneNumber ?? data?.PhoneNumber ?? "") as string;
-
-      if (!cancelled) {
-        setForm({ fullName, email, phoneNumber });
-      }
-    } catch (e: any) {
-      if (!cancelled) {
-        setError(e?.message || "Failed to load.");
-      }
-    } finally {
-      if (!cancelled) {
-        setLoading(false);
-      }
+  useEffect(() => {
+    if (!token) {
+      router.push("/signin");
+      return;
     }
-  };
 
-  loadProfile();
+    let cancelled = false;
 
-  return () => {
-    cancelled = true;
-  };
-}, [token, router]);
+    const loadProfile = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+
+        const res = await apiFetch(
+          "https://localhost:7145/api/Users/SystemAdminProfile",
+          { method: "GET" },
+          router
+        );
+
+        if (!res.ok) {
+          const t = await res.text().catch(() => "");
+          throw new Error(t || `Failed (${res.status})`);
+        }
+
+        const data: AdminProfile = await res.json();
+
+        const fullName = (data?.fullName ?? data?.FullName ?? "") as string;
+        const email = (data?.email ?? data?.Email ?? "") as string;
+        const phoneNumber = (data?.phoneNumber ?? data?.PhoneNumber ?? "") as string;
+
+        if (!cancelled) {
+          setForm({ fullName, email, phoneNumber });
+        }
+      } catch (e: any) {
+        if (!cancelled) {
+          setError(e?.message || "Failed to load.");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [token, router]);
 
   const Shell = ({ children }: { children: React.ReactNode }) => (
     <section
@@ -96,7 +134,10 @@ const UpdateAdminProfilePage = () => {
       <div className="container">
         <div className="-mx-4 flex flex-wrap justify-center">
           <div className="w-full px-4">
-            <div
+            <motion.div
+              variants={fadeContainer}
+              initial="hidden"
+              animate="visible"
               className="
                 mx-auto
                 w-full
@@ -116,7 +157,7 @@ const UpdateAdminProfilePage = () => {
               "
             >
               {children}
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -173,7 +214,14 @@ const UpdateAdminProfilePage = () => {
   if (loading) {
     return (
       <Shell>
-        <div className="text-center text-body-color dark:text-body-color-dark">Loading...</div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center text-body-color dark:text-body-color-dark"
+        >
+          Loading...
+        </motion.div>
       </Shell>
     );
   }
@@ -181,11 +229,19 @@ const UpdateAdminProfilePage = () => {
   if (!form) {
     return (
       <Shell>
-        <div className="text-center text-body-color dark:text-body-color-dark">
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center text-body-color dark:text-body-color-dark"
+        >
           Profile not found.
-        </div>
+        </motion.div>
 
-        <button
+        <motion.button
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           onClick={() => router.push("/admin/profile")}
           className="
             mt-6 block w-full rounded-xl
@@ -196,14 +252,19 @@ const UpdateAdminProfilePage = () => {
           "
         >
           Back
-        </button>
+        </motion.button>
       </Shell>
     );
   }
 
   return (
     <Shell>
-      <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
+      <motion.div
+        initial={{ scale: 0.85, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white"
+      >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path
             d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2.25c-4.2 0-7.5 2.1-7.5 4.5v.75h15v-.75c0-2.4-3.3-4.5-7.5-4.5Z"
@@ -211,29 +272,55 @@ const UpdateAdminProfilePage = () => {
             opacity="0.9"
           />
         </svg>
-      </div>
+      </motion.div>
 
-      <h1 className="mb-1 text-center text-2xl font-bold text-black dark:text-white">
+      <motion.h1
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="mb-1 text-center text-2xl font-bold text-black dark:text-white"
+      >
         Update Admin Profile
-      </h1>
-      <p className="text-body-color dark:text-body-color-dark mb-7 text-center text-sm font-medium">
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.05, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="text-body-color dark:text-body-color-dark mb-7 text-center text-sm font-medium"
+      >
         Update your account details then save.
-      </p>
+      </motion.p>
 
       {success && (
-        <div className="mb-5 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-700 dark:text-green-400">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-5 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-700 dark:text-green-400"
+        >
           {success}
-        </div>
+        </motion.div>
       )}
 
       {error && (
-        <div className="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400"
+        >
           {error}
-        </div>
+        </motion.div>
       )}
 
-      <form onSubmit={onSubmit} className="space-y-5">
-        <div>
+      <motion.form
+        onSubmit={onSubmit}
+        className="space-y-5"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={fadeItem}>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Full Name
           </label>
@@ -264,9 +351,9 @@ const UpdateAdminProfilePage = () => {
               "
             />
           </div>
-        </div>
+        </motion.div>
 
-        <div>
+        <motion.div variants={fadeItem}>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Email
           </label>
@@ -293,9 +380,9 @@ const UpdateAdminProfilePage = () => {
               "
             />
           </div>
-        </div>
+        </motion.div>
 
-        <div>
+        <motion.div variants={fadeItem}>
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Phone Number
           </label>
@@ -327,9 +414,10 @@ const UpdateAdminProfilePage = () => {
               placeholder="Optional"
             />
           </div>
-        </div>
+        </motion.div>
 
-        <button
+        <motion.button
+          variants={fadeItem}
           type="submit"
           disabled={saving || !!success}
           className="
@@ -342,9 +430,10 @@ const UpdateAdminProfilePage = () => {
           "
         >
           {saving ? "Saving..." : success ? "Saved" : "Save Changes"}
-        </button>
+        </motion.button>
 
-        <button
+        <motion.button
+          variants={fadeItem}
           type="button"
           onClick={() => router.push("/admin/profile")}
           className="
@@ -359,9 +448,8 @@ const UpdateAdminProfilePage = () => {
           "
         >
           Cancel
-        </button>
-        
-      </form>
+        </motion.button>
+      </motion.form>
     </Shell>
   );
 };

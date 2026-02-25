@@ -115,12 +115,13 @@ const SignupPage = () => {
   };
 
   return (
-    <section className="relative z-10 overflow-hidden pt-28 pb-16 md:pt-32 lg:pt-[150px] lg:pb-24">
-      <div className="container">
-        <div className="-mx-4 flex flex-wrap justify-center">
-          <div className="w-full px-4">
-            <div
-              className="
+    <>
+      <section className="relative z-10 overflow-hidden pt-28 pb-16 md:pt-32 lg:pt-[150px] lg:pb-24 opacity-0 animate-[signupPageIn_.55s_ease-out_forwards]">
+        <div className="container">
+          <div className="-mx-4 flex flex-wrap justify-center">
+            <div className="w-full px-4">
+              <div
+                className="
                 mx-auto
                 w-full
                 max-w-[460px]
@@ -133,140 +134,141 @@ const SignupPage = () => {
                 md:p-10
                 dark:border-white/10
                 dark:bg-white/5
+                opacity-0 animate-[signupCardIn_.6s_ease-out_forwards]
               "
-            >
-              <div className="mb-6 text-center">
-                <h3 className="text-2xl font-extrabold text-dark dark:text-white md:text-3xl">
-                  Create your account
-                </h3>
-                <p className="mt-2 text-sm text-body-color dark:text-body-color-dark">
-                  It’s totally free and super easy
-                </p>
-              </div>
-
-              {error && (
-                <div className="mb-5 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-600 dark:text-red-400">
-                  {error}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div className="md:col-span-2">
-                    <label className={labelClass}>Full Name</label>
-                    <input
-                      type="text"
-                      name="fullName"
-                      placeholder="Enter your full name"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      required
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className={labelClass}>Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div>
-                    <label className={labelClass}>Phone Number</label>
-                    <input
-                      type="text"
-                      name="phoneNumber"
-                      placeholder="e.g. +9627..."
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      required
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div>
-                    <label className={labelClass}>Date of Birth</label>
-                    <input
-                      type="date"
-                      name="dob"
-                      value={dob}
-                      onChange={(e) => setDob(e.target.value)}
-                      required
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className={labelClass}>University Name</label>
-                    <input
-                      type="text"
-                      name="uniName"
-                      placeholder="Enter your university name"
-                      value={uniName}
-                      onChange={(e) => setUniName(e.target.value)}
-                      required
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div>
-                    <label className={labelClass}>Password</label>
-                    <input
-                      type="password"
-                      name="password"
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div>
-                    <label className={labelClass}>Confirm Password</label>
-                    <input
-                      type="password"
-                      name="confirmedPassword"
-                      placeholder="Confirm your password"
-                      value={confirmedPassword}
-                      onChange={(e) => setConfirmedPassword(e.target.value)}
-                      required
-                      className={inputClass}
-                    />
-                  </div>
+              >
+                <div className="mb-6 text-center opacity-0 animate-[signupItemUp_.6s_ease-out_forwards] [animation-delay:120ms]">
+                  <h3 className="text-2xl font-extrabold text-dark dark:text-white md:text-3xl">
+                    Create your account
+                  </h3>
+                  <p className="mt-2 text-sm text-body-color dark:text-body-color-dark">
+                    It’s totally free and super easy
+                  </p>
                 </div>
 
-                <label className="mt-1 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm text-body-color shadow-sm backdrop-blur-xl transition hover:bg-white/15 dark:border-white/10 dark:bg-white/5 dark:text-body-color-dark dark:hover:bg-white/10">
-                  <input
-                    type="checkbox"
-                    checked={accepted}
-                    onChange={(e) => setAccepted(e.target.checked)}
-                    className="mt-1 h-5 w-5 accent-primary"
-                  />
-                  <span className="leading-relaxed">
-                    By creating account means you agree to the{" "}
-                    <a href="#0" className="text-primary hover:underline">
-                      Terms and Conditions
-                    </a>{" "}
-                    and our{" "}
-                    <a href="#0" className="text-primary hover:underline">
-                      Privacy Policy
-                    </a>
-                    .
-                  </span>
-                </label>
+                {error && (
+                  <div className="mb-5 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-600 dark:text-red-400 opacity-0 animate-[signupItemUp_.45s_ease-out_forwards]">
+                    {error}
+                  </div>
+                )}
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="md:col-span-2 opacity-0 animate-[signupItemUp_.6s_ease-out_forwards] [animation-delay:180ms]">
+                      <label className={labelClass}>Full Name</label>
+                      <input
+                        type="text"
+                        name="fullName"
+                        placeholder="Enter your full name"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        required
+                        className={inputClass}
+                      />
+                    </div>
+
+                    <div className="md:col-span-2 opacity-0 animate-[signupItemUp_.6s_ease-out_forwards] [animation-delay:240ms]">
+                      <label className={labelClass}>Email</label>
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className={inputClass}
+                      />
+                    </div>
+
+                    <div className="opacity-0 animate-[signupItemUp_.6s_ease-out_forwards] [animation-delay:300ms]">
+                      <label className={labelClass}>Phone Number</label>
+                      <input
+                        type="text"
+                        name="phoneNumber"
+                        placeholder="e.g. +9627..."
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        required
+                        className={inputClass}
+                      />
+                    </div>
+
+                    <div className="opacity-0 animate-[signupItemUp_.6s_ease-out_forwards] [animation-delay:360ms]">
+                      <label className={labelClass}>Date of Birth</label>
+                      <input
+                        type="date"
+                        name="dob"
+                        value={dob}
+                        onChange={(e) => setDob(e.target.value)}
+                        required
+                        className={inputClass}
+                      />
+                    </div>
+
+                    <div className="md:col-span-2 opacity-0 animate-[signupItemUp_.6s_ease-out_forwards] [animation-delay:420ms]">
+                      <label className={labelClass}>University Name</label>
+                      <input
+                        type="text"
+                        name="uniName"
+                        placeholder="Enter your university name"
+                        value={uniName}
+                        onChange={(e) => setUniName(e.target.value)}
+                        required
+                        className={inputClass}
+                      />
+                    </div>
+
+                    <div className="opacity-0 animate-[signupItemUp_.6s_ease-out_forwards] [animation-delay:480ms]">
+                      <label className={labelClass}>Password</label>
+                      <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className={inputClass}
+                      />
+                    </div>
+
+                    <div className="opacity-0 animate-[signupItemUp_.6s_ease-out_forwards] [animation-delay:540ms]">
+                      <label className={labelClass}>Confirm Password</label>
+                      <input
+                        type="password"
+                        name="confirmedPassword"
+                        placeholder="Confirm your password"
+                        value={confirmedPassword}
+                        onChange={(e) => setConfirmedPassword(e.target.value)}
+                        required
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+
+                  <label className="mt-1 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm text-body-color shadow-sm backdrop-blur-xl transition hover:bg-white/15 dark:border-white/10 dark:bg-white/5 dark:text-body-color-dark dark:hover:bg-white/10 opacity-0 animate-[signupItemUp_.6s_ease-out_forwards] [animation-delay:600ms]">
+                    <input
+                      type="checkbox"
+                      checked={accepted}
+                      onChange={(e) => setAccepted(e.target.checked)}
+                      className="mt-1 h-5 w-5 accent-primary"
+                    />
+                    <span className="leading-relaxed">
+                      By creating account means you agree to the{" "}
+                      <a href="#0" className="text-primary hover:underline">
+                        Terms and Conditions
+                      </a>{" "}
+                      and our{" "}
+                      <a href="#0" className="text-primary hover:underline">
+                        Privacy Policy
+                      </a>
+                      .
+                    </span>
+                  </label>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="
                     shadow-btn hover:shadow-btn-hover
                     bg-primary hover:bg-primary/90
                     flex w-full items-center justify-center
@@ -276,81 +278,103 @@ const SignupPage = () => {
                     transition duration-300
                     disabled:opacity-60
                     active:scale-[0.99]
+                    opacity-0 animate-[signupItemUp_.6s_ease-out_forwards]
+                    [animation-delay:660ms]
                   "
-                >
-                  {loading ? "Signing up..." : "Sign up"}
-                </button>
-              </form>
+                  >
+                    {loading ? "Signing up..." : "Sign up"}
+                  </button>
+                </form>
 
-              <p className="mt-6 text-center text-sm font-medium text-body-color dark:text-body-color-dark">
-                Already have an account?{" "}
-                <Link href="/signin" className="text-primary hover:underline">
-                  Sign in
-                </Link>
-              </p>
+                <p className="mt-6 text-center text-sm font-medium text-body-color dark:text-body-color-dark opacity-0 animate-[signupItemUp_.6s_ease-out_forwards] [animation-delay:720ms]">
+                  Already have an account?{" "}
+                  <Link href="/signin" className="text-primary hover:underline">
+                    Sign in
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="absolute top-0 left-0 z-[-1]">
-        <svg
-          width="1440"
-          height="969"
-          viewBox="0 0 1440 969"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <mask
-            id="mask0_95:1005"
-            style={{ maskType: "alpha" }}
-            maskUnits="userSpaceOnUse"
-            x="0"
-            y="0"
+        <div className="absolute top-0 left-0 z-[-1] opacity-0 animate-[signupBgIn_.8s_ease-out_forwards]">
+          <svg
             width="1440"
             height="969"
+            viewBox="0 0 1440 969"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <rect width="1440" height="969" fill="#090E34" />
-          </mask>
-          <g mask="url(#mask0_95:1005)">
-            <path
-              opacity="0.1"
-              d="M1086.96 297.978L632.959 554.978L935.625 535.926L1086.96 297.978Z"
-              fill="url(#paint0_linear_95:1005)"
-            />
-            <path
-              opacity="0.1"
-              d="M1324.5 755.5L1450 687V886.5L1324.5 967.5L-10 288L1324.5 755.5Z"
-              fill="url(#paint1_linear_95:1005)"
-            />
-          </g>
-          <defs>
-            <linearGradient
-              id="paint0_linear_95:1005"
-              x1="1178.4"
-              y1="151.853"
-              x2="780.959"
-              y2="453.581"
-              gradientUnits="userSpaceOnUse"
+            <mask
+              id="mask0_95:1005"
+              style={{ maskType: "alpha" }}
+              maskUnits="userSpaceOnUse"
+              x="0"
+              y="0"
+              width="1440"
+              height="969"
             >
-              <stop stopColor="#4A6CF7" />
-              <stop offset="1" stopColor="#4A6CF7" stopOpacity="0" />
-            </linearGradient>
-            <linearGradient
-              id="paint1_linear_95:1005"
-              x1="160.5"
-              y1="220"
-              x2="1099.45"
-              y2="1192.04"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stopColor="#4A6CF7" />
-              <stop offset="1" stopColor="#4A6CF7" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-    </section>
+              <rect width="1440" height="969" fill="#090E34" />
+            </mask>
+            <g mask="url(#mask0_95:1005)">
+              <path
+                opacity="0.1"
+                d="M1086.96 297.978L632.959 554.978L935.625 535.926L1086.96 297.978Z"
+                fill="url(#paint0_linear_95:1005)"
+              />
+              <path
+                opacity="0.1"
+                d="M1324.5 755.5L1450 687V886.5L1324.5 967.5L-10 288L1324.5 755.5Z"
+                fill="url(#paint1_linear_95:1005)"
+              />
+            </g>
+            <defs>
+              <linearGradient
+                id="paint0_linear_95:1005"
+                x1="1178.4"
+                y1="151.853"
+                x2="780.959"
+                y2="453.581"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="#4A6CF7" />
+                <stop offset="1" stopColor="#4A6CF7" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient
+                id="paint1_linear_95:1005"
+                x1="160.5"
+                y1="220"
+                x2="1099.45"
+                y2="1192.04"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stopColor="#4A6CF7" />
+                <stop offset="1" stopColor="#4A6CF7" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </section>
+
+      <style>{`
+        @keyframes signupPageIn {
+          0% { opacity: 0; }
+          100% { opacity: 1; }
+        }
+        @keyframes signupCardIn {
+          0% { opacity: 0; transform: translateY(18px) scale(0.98); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes signupItemUp {
+          0% { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes signupBgIn {
+          0% { opacity: 0; }
+          100% { opacity: 1; }
+        }
+      `}</style>
+    </>
   );
 };
 

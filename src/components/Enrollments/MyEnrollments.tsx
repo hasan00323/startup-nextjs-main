@@ -9,7 +9,7 @@ type Enrollment = any;
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <section
-      className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[170px] lg:pb-24"
+      className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[170px] lg:pb-24 opacity-0 animate-[enSectionIn_.6s_ease-out_forwards]"
       style={{ marginTop: "-60px" }}
     >
       <div className="container">
@@ -32,6 +32,7 @@ function Shell({ children }: { children: React.ReactNode }) {
                 dark:bg-white/5
                 dark:ring-white/10
                 sm:p-8
+                opacity-0 animate-[enCardIn_.7s_ease-out_forwards]
               "
             >
               {children}
@@ -45,7 +46,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 
 function LoadingBlock({ text }: { text: string }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 py-10">
+    <div className="flex flex-col items-center justify-center gap-3 py-10 opacity-0 animate-[enItemUp_.6s_ease-out_forwards]">
       <div className="flex items-center gap-2">
         <span className="h-2.5 w-2.5 animate-bounce rounded-full bg-black/60 dark:bg-white/80 [animation-delay:-0.2s]" />
         <span className="h-2.5 w-2.5 animate-bounce rounded-full bg-black/60 dark:bg-white/80 [animation-delay:-0.1s]" />
@@ -65,7 +66,8 @@ function Alert({
   type: "error" | "info";
   children: React.ReactNode;
 }) {
-  const base = "rounded-xl border px-4 py-3 text-sm";
+  const base =
+    "rounded-xl border px-4 py-3 text-sm opacity-0 animate-[enItemUp_.6s_ease-out_forwards]";
   const variant =
     type === "error"
       ? "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400"
@@ -131,8 +133,7 @@ const MyEnrollmentsPage = () => {
         }
 
         const data = await res.json();
-
-        const arr = Array.isArray(data) ? data : (data?.items ?? []);
+        const arr = Array.isArray(data) ? data : data?.items ?? [];
 
         if (!Array.isArray(arr)) {
           setEnrollments([]);
@@ -147,37 +148,111 @@ const MyEnrollmentsPage = () => {
 
   if (loading) {
     return (
-      <Shell>
-        <LoadingBlock text="Loading enrollments..." />
-      </Shell>
+      <>
+        <Shell>
+          <LoadingBlock text="Loading enrollments..." />
+        </Shell>
+        <style>{`
+          @keyframes enSectionIn {
+            0% { opacity: 0; transform: translateY(12px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes enCardIn {
+            0% { opacity: 0; transform: translateY(18px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+          }
+          @keyframes enItemUp {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
+      </>
     );
   }
 
   if (error) {
     return (
-      <Shell>
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2.25c-4.2 0-7.5 2.1-7.5 4.5v.75h15v-.75c0-2.4-3.3-4.5-7.5-4.5Z"
-                fill="currentColor"
-                opacity="0.9"
-              />
-            </svg>
+      <>
+        <Shell>
+          <div className="mb-6 text-center opacity-0 animate-[enItemUp_.6s_ease-out_forwards]">
+            <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2.25c-4.2 0-7.5 2.1-7.5 4.5v.75h15v-.75c0-2.4-3.3-4.5-7.5-4.5Z"
+                  fill="currentColor"
+                  opacity="0.9"
+                />
+              </svg>
+            </div>
+
+            <h1 className="text-2xl font-bold text-black dark:text-white">
+              My Enrollments
+            </h1>
+            <p className="text-body-color dark:text-body-color-dark mt-1 text-sm font-medium">
+              Courses you are enrolled in.
+            </p>
           </div>
 
-          <h1 className="text-2xl font-bold text-black dark:text-white">
-            My Enrollments
-          </h1>
-          <p className="text-body-color dark:text-body-color-dark mt-1 text-sm font-medium">
-            Courses you are enrolled in.
-          </p>
-        </div>
+          <Alert type="error">{error}</Alert>
 
-        <Alert type="error">{error}</Alert>
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 opacity-0 animate-[enItemUp_.6s_ease-out_forwards]">
+            <button
+              onClick={() => router.push("/courses")}
+              className="
+                rounded-xl border border-white/20 bg-white/10
+                px-6 py-3 text-sm font-semibold text-black
+                transition duration-300 hover:bg-white/15
+                dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
+              "
+            >
+              Back
+            </button>
 
-        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <button
+              onClick={() => window.location.reload()}
+              className="
+                shadow-submit dark:shadow-submit-dark
+                bg-primary hover:bg-primary/90
+                rounded-xl px-6 py-3 text-sm font-semibold text-white
+                transition duration-300
+              "
+            >
+              Retry
+            </button>
+          </div>
+        </Shell>
+
+        <style>{`
+          @keyframes enSectionIn {
+            0% { opacity: 0; transform: translateY(12px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes enCardIn {
+            0% { opacity: 0; transform: translateY(18px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+          }
+          @keyframes enItemUp {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Shell>
+        <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between opacity-0 animate-[enItemUp_.6s_ease-out_forwards]">
+          <div>
+            <h1 className="text-2xl font-bold text-black dark:text-white">
+              My Enrollments
+            </h1>
+            <p className="text-body-color dark:text-body-color-dark mt-1 text-sm font-medium">
+              Courses you are enrolled in.
+            </p>
+          </div>
+
           <button
             onClick={() => router.push("/courses")}
             className="
@@ -189,114 +264,92 @@ const MyEnrollmentsPage = () => {
           >
             Back
           </button>
-
-          <button
-            onClick={() => window.location.reload()}
-            className="
-              shadow-submit dark:shadow-submit-dark
-              bg-primary hover:bg-primary/90
-              rounded-xl px-6 py-3 text-sm font-semibold text-white
-              transition duration-300
-            "
-          >
-            Retry
-          </button>
-        </div>
-      </Shell>
-    );
-  }
-
-  return (
-    <Shell>
-      <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-black dark:text-white">
-            My Enrollments
-          </h1>
-          <p className="text-body-color dark:text-body-color-dark mt-1 text-sm font-medium">
-            Courses you are enrolled in.
-          </p>
         </div>
 
-        <button
-          onClick={() => router.push("/courses")}
-          className="
-            rounded-xl border border-white/20 bg-white/10
-            px-6 py-3 text-sm font-semibold text-black
-            transition duration-300 hover:bg-white/15
-            dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
-          "
-        >
-          Back
-        </button>
-      </div>
+        {enrollments.length === 0 ? (
+          <Alert type="info">You havent any enrollments yet.</Alert>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {enrollments.map((en: any, index: number) => {
+              const courseId =
+                en?.courseId ?? en?.CourseId ?? en?.id ?? en?.Id ?? "";
+              const key = String(courseId || index);
+              const course = en?.course ?? en?.Course ?? en;
+              const canView = Boolean(
+                course?.CourseId ?? course?.courseId ?? courseId
+              );
 
-      {enrollments.length === 0 ? (
-        <Alert type="info">You havent any enrollments yet.</Alert>
-      ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {enrollments.map((en: any, index: number) => {
-            const courseId =
-              en?.courseId ?? en?.CourseId ?? en?.id ?? en?.Id ?? "";
+              return (
+                <div
+                  key={key}
+                  className="
+                    rounded-2xl
+                    border border-white/20
+                    bg-white/10
+                    p-6
+                    shadow-sm
+                    transition duration-300
+                    hover:bg-white/15 hover:border-white/30
+                    dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10
+                    opacity-0 animate-[enCardIn_.6s_ease-out_forwards]
+                  "
+                  style={{ animationDelay: `${100 + index * 70}ms` }}
+                >
+                  <h3 className="mb-2 text-lg font-bold text-black dark:text-white">
+                    {course?.title ?? course?.Title ?? "Course"}
+                  </h3>
 
-            const key = String(courseId || index);
+                  <p className="text-body-color dark:text-body-color-dark mb-4 text-sm">
+                    {course?.description ??
+                      course?.Description ??
+                      "No description"}
+                  </p>
 
-            const course = en?.course ?? en?.Course ?? en;
-
-            const canView = Boolean(
-              course?.CourseId ?? course?.courseId ?? courseId
-            );
-
-            return (
-              <div
-                key={key}
-                className="
-                  rounded-2xl
-                  border border-white/20
-                  bg-white/10
-                  p-6
-                  shadow-sm
-                  transition duration-300
-                  hover:bg-white/15 hover:border-white/30
-                  dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10
-                "
-              >
-                <h3 className="mb-2 text-lg font-bold text-black dark:text-white">
-                  {course?.title ?? course?.Title ?? "Course"}
-                </h3>
-
-                <p className="text-body-color dark:text-body-color-dark mb-4 text-sm">
-                  {course?.description ??
-                    course?.Description ??
-                    "No description"}
-                </p>
-
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <span className="text-body-color dark:text-body-color-dark text-xs">
-                    Category:{" "}
-                    <span className="font-semibold">
-                      {course?.categoryName ?? course?.CategoryName ?? "-"}
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <span className="text-body-color dark:text-body-color-dark text-xs">
+                      Category:{" "}
+                      <span className="font-semibold">
+                        {course?.categoryName ?? course?.CategoryName ?? "-"}
+                      </span>
                     </span>
-                  </span>
 
-                  <button
-                    onClick={() => {
-                      const id =
-                        course?.CourseId ?? course?.courseId ?? courseId ?? "";
-                      router.push(`/courses/details/${id}`);
-                    }}
-                    className="text-primary text-xs font-semibold hover:underline disabled:opacity-60 disabled:cursor-not-allowed"
-                    disabled={!canView}
-                  >
-                    View Course
-                  </button>
+                    <button
+                      onClick={() => {
+                        const id =
+                          course?.CourseId ??
+                          course?.courseId ??
+                          courseId ??
+                          "";
+                        router.push(`/courses/details/${id}`);
+                      }}
+                      className="text-primary text-xs font-semibold hover:underline disabled:opacity-60 disabled:cursor-not-allowed"
+                      disabled={!canView}
+                    >
+                      View Course
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </Shell>
+              );
+            })}
+          </div>
+        )}
+      </Shell>
+
+      <style>{`
+        @keyframes enSectionIn {
+          0% { opacity: 0; transform: translateY(12px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes enCardIn {
+          0% { opacity: 0; transform: translateY(18px) scale(0.98); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes enItemUp {
+          0% { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </>
   );
 };
 

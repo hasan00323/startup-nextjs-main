@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
+import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 
 type AdminProfile = {
   userId?: number | string;
@@ -13,6 +15,30 @@ type AdminProfile = {
   Email?: string;
   phoneNumber?: string;
   PhoneNumber?: string;
+};
+
+const fadeContainer: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
+const fadeItem: Variants = {
+  hidden: { opacity: 0, x: -30 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
 };
 
 const AdminProfilePage = () => {
@@ -27,33 +53,33 @@ const AdminProfilePage = () => {
     return localStorage.getItem("token");
   }, []);
 
- useEffect(() => {
-  if (!token) {
-    router.push("/signin");
-    return;
-  }
+  useEffect(() => {
+    if (!token) {
+      router.push("/signin");
+      return;
+    }
 
-  setLoading(true);
-  setError(null);
+    setLoading(true);
+    setError(null);
 
-  apiFetch(
-    "https://localhost:7145/api/Users/SystemAdminProfile",
-    {
-      method: "GET",
-    },
-    router
-  )
-    .then(async (res) => {
-      if (!res.ok) {
-        const t = await res.text().catch(() => "");
-        throw new Error(t || `Failed (${res.status})`);
-      }
-      return res.json();
-    })
-    .then((data) => setProfile(data))
-    .catch((e) => setError(e?.message || "Failed to load"))
-    .finally(() => setLoading(false));
-}, [token, router]);
+    apiFetch(
+      "https://localhost:7145/api/Users/SystemAdminProfile",
+      {
+        method: "GET",
+      },
+      router
+    )
+      .then(async (res) => {
+        if (!res.ok) {
+          const t = await res.text().catch(() => "");
+          throw new Error(t || `Failed (${res.status})`);
+        }
+        return res.json();
+      })
+      .then((data) => setProfile(data))
+      .catch((e) => setError(e?.message || "Failed to load"))
+      .finally(() => setLoading(false));
+  }, [token, router]);
 
   const Shell = ({ children }: { children: React.ReactNode }) => (
     <section
@@ -63,7 +89,10 @@ const AdminProfilePage = () => {
       <div className="container">
         <div className="-mx-4 flex flex-wrap justify-center">
           <div className="w-full px-4">
-            <div
+            <motion.div
+              variants={fadeContainer}
+              initial="hidden"
+              animate="visible"
               className="
                 mx-auto
                 w-full
@@ -83,7 +112,7 @@ const AdminProfilePage = () => {
               "
             >
               {children}
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -93,7 +122,14 @@ const AdminProfilePage = () => {
   if (loading) {
     return (
       <Shell>
-        <div className="text-center text-body-color dark:text-body-color-dark">Loading...</div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="text-center text-body-color dark:text-body-color-dark"
+        >
+          Loading...
+        </motion.div>
       </Shell>
     );
   }
@@ -101,13 +137,22 @@ const AdminProfilePage = () => {
   if (error) {
     return (
       <Shell>
-        <h3 className="mb-2 text-center text-xl font-bold text-black dark:text-white">
+        <motion.h3
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-2 text-center text-xl font-bold text-black dark:text-white"
+        >
           Something went wrong
-        </h3>
+        </motion.h3>
 
-        <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400"
+        >
           {error}
-        </div>
+        </motion.div>
 
         <button
           onClick={() => router.push("/")}
@@ -145,7 +190,12 @@ const AdminProfilePage = () => {
 
   return (
     <Shell>
-      <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white"
+      >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path
             d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2.25c-4.2 0-7.5 2.1-7.5 4.5v.75h15v-.75c0-2.4-3.3-4.5-7.5-4.5Z"
@@ -153,38 +203,58 @@ const AdminProfilePage = () => {
             opacity="0.9"
           />
         </svg>
-      </div>
+      </motion.div>
 
-      <h1 className="mb-1 text-center text-2xl font-bold text-black dark:text-white">
+      <motion.h1
+        initial={{ opacity: 0, y: -15 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-1 text-center text-2xl font-bold text-black dark:text-white"
+      >
         Admin Profile
-      </h1>
-      <p className="text-body-color dark:text-body-color-dark mb-7 text-center text-sm font-medium">
+      </motion.h1>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className="text-body-color dark:text-body-color-dark mb-7 text-center text-sm font-medium"
+      >
         Your system admin account information.
-      </p>
+      </motion.p>
 
-      <div className="space-y-4">
-        <div className="rounded-xl border border-white/20 bg-white/10 px-4 py-4 dark:border-white/10 dark:bg-white/5">
-          <p className="text-xs font-semibold text-black dark:text-white">User ID</p>
-          <p className="text-body-color dark:text-body-color-dark mt-2 text-sm">{String(userId)}</p>
-        </div>
+      <motion.div
+        variants={fadeContainer}
+        initial="hidden"
+        animate="visible"
+        className="space-y-4"
+      >
+        {[
+          { label: "User ID", value: userId },
+          { label: "Full Name", value: fullName },
+          { label: "Email", value: email },
+          { label: "Phone Number", value: phone },
+        ].map((item, i) => (
+          <motion.div
+            key={i}
+            variants={fadeItem}
+            className="rounded-xl border border-white/20 bg-white/10 px-4 py-4 dark:border-white/10 dark:bg-white/5"
+          >
+            <p className="text-xs font-semibold text-black dark:text-white">
+              {item.label}
+            </p>
+            <p className="text-body-color dark:text-body-color-dark mt-2 text-sm">
+              {String(item.value)}
+            </p>
+          </motion.div>
+        ))}
+      </motion.div>
 
-        <div className="rounded-xl border border-white/20 bg-white/10 px-4 py-4 dark:border-white/10 dark:bg-white/5">
-          <p className="text-xs font-semibold text-black dark:text-white">Full Name</p>
-          <p className="text-body-color dark:text-body-color-dark mt-2 text-sm">{String(fullName)}</p>
-        </div>
-
-        <div className="rounded-xl border border-white/20 bg-white/10 px-4 py-4 dark:border-white/10 dark:bg-white/5">
-          <p className="text-xs font-semibold text-black dark:text-white">Email</p>
-          <p className="text-body-color dark:text-body-color-dark mt-2 text-sm">{String(email)}</p>
-        </div>
-
-        <div className="rounded-xl border border-white/20 bg-white/10 px-4 py-4 dark:border-white/10 dark:bg-white/5">
-          <p className="text-xs font-semibold text-black dark:text-white">Phone Number</p>
-          <p className="text-body-color dark:text-body-color-dark mt-2 text-sm">{String(phone)}</p>
-        </div>
-      </div>
-
-      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2"
+      >
         <button
           onClick={() => router.push("/")}
           className="
@@ -208,7 +278,7 @@ const AdminProfilePage = () => {
         >
           Edit
         </button>
-      </div>
+      </motion.div>
     </Shell>
   );
 };

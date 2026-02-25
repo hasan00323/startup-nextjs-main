@@ -11,29 +11,47 @@ type ResetPasswordForm = {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <section
-      className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[170px] lg:pb-24"
-      style={{ marginTop: "-60px" }}
-    >
-      <div className="container">
-        <div className="-mx-4 flex flex-wrap justify-center">
-          <div className="w-full px-4">
-            <div
-              className="
-                mx-auto w-full max-w-[92%] sm:max-w-[520px]
-                rounded-2xl border border-white/20
-                bg-white/10 p-6 shadow-three backdrop-blur-xl
-                ring-1 ring-white/10
-                dark:border-white/10 dark:bg-white/5 dark:ring-white/10
-                sm:p-8
-              "
-            >
-              {children}
+    <>
+      <section
+        className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[170px] lg:pb-24 opacity-0 animate-[rpSectionIn_.6s_ease-out_forwards]"
+        style={{ marginTop: "-60px" }}
+      >
+        <div className="container">
+          <div className="-mx-4 flex flex-wrap justify-center">
+            <div className="w-full px-4">
+              <div
+                className="
+                  mx-auto w-full max-w-[92%] sm:max-w-[520px]
+                  rounded-2xl border border-white/20
+                  bg-white/10 p-6 shadow-three backdrop-blur-xl
+                  ring-1 ring-white/10
+                  dark:border-white/10 dark:bg-white/5 dark:ring-white/10
+                  sm:p-8
+                  opacity-0 animate-[rpCardIn_.7s_ease-out_forwards]
+                "
+              >
+                {children}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <style>{`
+        @keyframes rpSectionIn {
+          0% { opacity: 0; transform: translateY(12px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes rpCardIn {
+          0% { opacity: 0; transform: translateY(18px) scale(0.98); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes rpItemUp {
+          0% { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </>
   );
 }
 
@@ -157,7 +175,7 @@ export default function ResetPasswordPage() {
   if (!mounted) {
     return (
       <Shell>
-        <div className="text-center text-body-color dark:text-body-color-dark">
+        <div className="text-center text-body-color dark:text-body-color-dark opacity-0 animate-[rpItemUp_.6s_ease-out_forwards]">
           Loading...
         </div>
       </Shell>
@@ -167,10 +185,10 @@ export default function ResetPasswordPage() {
   if (!token) {
     return (
       <Shell>
-        <h3 className="mb-2 text-center text-xl font-bold text-black dark:text-white">
+        <h3 className="mb-2 text-center text-xl font-bold text-black dark:text-white opacity-0 animate-[rpItemUp_.6s_ease-out_forwards]">
           Sign in required
         </h3>
-        <p className="text-body-color dark:text-body-color-dark mb-6 text-center text-sm">
+        <p className="text-body-color dark:text-body-color-dark mb-6 text-center text-sm opacity-0 animate-[rpItemUp_.6s_ease-out_forwards] [animation-delay:120ms]">
           You must sign in to reset your password.
         </p>
         <button
@@ -181,6 +199,7 @@ export default function ResetPasswordPage() {
             w-full rounded-xl px-10 py-3.5
             text-sm font-semibold text-white
             transition duration-300
+            opacity-0 animate-[rpItemUp_.6s_ease-out_forwards] [animation-delay:200ms]
           "
         >
           Go to Sign In
@@ -191,7 +210,7 @@ export default function ResetPasswordPage() {
 
   return (
     <Shell>
-      <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white">
+      <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white opacity-0 animate-[rpItemUp_.6s_ease-out_forwards]">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path
             d="M7 11V8.8A5 5 0 0 1 12 4a5 5 0 0 1 5 4.8V11"
@@ -208,32 +227,32 @@ export default function ResetPasswordPage() {
         </svg>
       </div>
 
-      <h1 className="mb-1 text-center text-2xl font-bold text-black dark:text-white">
+      <h1 className="mb-1 text-center text-2xl font-bold text-black dark:text-white opacity-0 animate-[rpItemUp_.6s_ease-out_forwards] [animation-delay:120ms]">
         Reset Password
       </h1>
-      <p className="text-body-color dark:text-body-color-dark mb-7 text-center text-sm font-medium">
+      <p className="text-body-color dark:text-body-color-dark mb-7 text-center text-sm font-medium opacity-0 animate-[rpItemUp_.6s_ease-out_forwards] [animation-delay:200ms]">
         Enter your current password and a new one.
       </p>
 
       {success && (
-        <div className="mb-5 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-700 dark:text-green-400">
+        <div className="mb-5 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-700 dark:text-green-400 opacity-0 animate-[rpItemUp_.6s_ease-out_forwards]">
           {success}
         </div>
       )}
 
       {error && (
-        <div className="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+        <div className="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400 opacity-0 animate-[rpItemUp_.6s_ease-out_forwards]">
           {error}
         </div>
       )}
 
       <form onSubmit={onSubmit} className="space-y-5">
-        <div>
+        <div className="opacity-0 animate-[rpItemUp_.6s_ease-out_forwards] [animation-delay:260ms]">
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             Current Password
           </label>
 
-          <div className="flex items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-3 dark:border-white/10 dark:bg-white/5">
+          <div className="flex items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-3 dark:border-white/10 dark:bg-white/5 transition duration-300 focus-within:scale-[1.01]">
             <input
               type={showCurrent ? "text" : "password"}
               value={form.currentPassword}
@@ -247,9 +266,9 @@ export default function ResetPasswordPage() {
 
             <button
               type="button"
-              onMouseDown={(e) => e.preventDefault()} 
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => setShowCurrent((v) => !v)}
-              className="opacity-80 hover:opacity-100"
+              className="opacity-80 hover:opacity-100 transition"
               aria-label="Toggle current password visibility"
             >
               <EyeIcon open={showCurrent} />
@@ -257,12 +276,12 @@ export default function ResetPasswordPage() {
           </div>
         </div>
 
-        <div>
+        <div className="opacity-0 animate-[rpItemUp_.6s_ease-out_forwards] [animation-delay:340ms]">
           <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
             New Password
           </label>
 
-          <div className="flex items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-3 dark:border-white/10 dark:bg-white/5">
+          <div className="flex items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-3 dark:border-white/10 dark:bg-white/5 transition duration-300 focus-within:scale-[1.01]">
             <input
               type={showNew ? "text" : "password"}
               value={form.newPassword}
@@ -274,9 +293,9 @@ export default function ResetPasswordPage() {
 
             <button
               type="button"
-              onMouseDown={(e) => e.preventDefault()} 
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => setShowNew((v) => !v)}
-              className="opacity-80 hover:opacity-100"
+              className="opacity-80 hover:opacity-100 transition"
               aria-label="Toggle new password visibility"
             >
               <EyeIcon open={showNew} />
@@ -288,7 +307,7 @@ export default function ResetPasswordPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 opacity-0 animate-[rpItemUp_.6s_ease-out_forwards] [animation-delay:420ms]">
           <button
             type="button"
             onClick={() => router.back()}

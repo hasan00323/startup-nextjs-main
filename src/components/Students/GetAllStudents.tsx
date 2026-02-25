@@ -62,15 +62,16 @@ const GetAllStudentsPage = () => {
 }, [token, router]);
 
   const Shell = ({ children }: { children: React.ReactNode }) => (
-    <section
-      className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[170px] lg:pb-24"
-      style={{ marginTop: "-60px" }}
-    >
-      <div className="container">
-        <div className="-mx-4 flex flex-wrap justify-center">
-          <div className="w-full px-4">
-            <div
-              className="
+    <>
+      <section
+        className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[170px] lg:pb-24 opacity-0 animate-[gasSectionIn_.6s_ease-out_forwards]"
+        style={{ marginTop: "-60px" }}
+      >
+        <div className="container">
+          <div className="-mx-4 flex flex-wrap justify-center">
+            <div className="w-full px-4">
+              <div
+                className="
                 mx-auto
                 w-full
                 max-w-[92%]
@@ -86,20 +87,50 @@ const GetAllStudentsPage = () => {
                 dark:bg-white/5
                 dark:ring-white/10
                 sm:p-8
+                opacity-0 animate-[gasCardIn_.7s_ease-out_forwards]
               "
-            >
-              {children}
+              >
+                {children}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <style>{`
+        @keyframes gasSectionIn {
+          0% { opacity: 0; transform: translateY(12px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes gasCardIn {
+          0% { opacity: 0; transform: translateY(18px) scale(0.98); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes gasItemUp {
+          0% { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes gasFade {
+          0% { opacity: 0; }
+          100% { opacity: 1; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+          }
+        }
+      `}</style>
+    </>
   );
 
   if (loading) {
     return (
       <Shell>
-        <div className="text-center text-body-color dark:text-body-color-dark">Loading...</div>
+        <div className="text-center text-body-color dark:text-body-color-dark opacity-0 animate-[gasItemUp_.6s_ease-out_forwards]">
+          Loading...
+        </div>
       </Shell>
     );
   }
@@ -107,11 +138,11 @@ const GetAllStudentsPage = () => {
   if (error) {
     return (
       <Shell>
-        <h3 className="mb-2 text-center text-xl font-bold text-black dark:text-white">
+        <h3 className="mb-2 text-center text-xl font-bold text-black dark:text-white opacity-0 animate-[gasItemUp_.6s_ease-out_forwards]">
           Something went wrong
         </h3>
 
-        <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+        <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400 opacity-0 animate-[gasItemUp_.6s_ease-out_forwards] [animation-delay:120ms]">
           {error}
         </div>
 
@@ -126,6 +157,7 @@ const GetAllStudentsPage = () => {
             text-black transition duration-300
             hover:bg-white/15
             dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
+            opacity-0 animate-[gasItemUp_.6s_ease-out_forwards] [animation-delay:200ms]
           "
         >
           Back
@@ -136,12 +168,12 @@ const GetAllStudentsPage = () => {
 
   return (
     <Shell>
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" style={{marginTop:"70px"}}>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between opacity-0 animate-[gasItemUp_.6s_ease-out_forwards]" style={{marginTop:"70px"}}>
         <div>
-          <h1 className="text-2xl font-bold text-black dark:text-white sm:text-3xl">
+          <h1 className="text-2xl font-bold text-black dark:text-white sm:text-3xl opacity-0 animate-[gasItemUp_.6s_ease-out_forwards] [animation-delay:120ms]">
             All Students
           </h1>
-          <p className="text-body-color dark:text-body-color-dark mt-1 text-sm">
+          <p className="text-body-color dark:text-body-color-dark mt-1 text-sm opacity-0 animate-[gasItemUp_.6s_ease-out_forwards] [animation-delay:180ms]">
             List of all registered students.
           </p>
         </div>
@@ -153,6 +185,7 @@ const GetAllStudentsPage = () => {
             px-6 py-3 text-sm font-semibold text-black
             transition duration-300 hover:bg-white/15
             dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
+            opacity-0 animate-[gasItemUp_.6s_ease-out_forwards] [animation-delay:240ms]
           "
         >
           Back
@@ -160,11 +193,11 @@ const GetAllStudentsPage = () => {
       </div>
 
       {students.length === 0 ? (
-        <div className="rounded-xl border border-white/20 bg-white/10 p-8 text-center text-body-color dark:border-white/10 dark:bg-white/5 dark:text-body-color-dark">
+        <div className="rounded-xl border border-white/20 bg-white/10 p-8 text-center text-body-color dark:border-white/10 dark:bg-white/5 dark:text-body-color-dark opacity-0 animate-[gasItemUp_.6s_ease-out_forwards] [animation-delay:220ms]">
           No students found.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-white/20 bg-white/10 dark:border-white/10 dark:bg-white/5">
+        <div className="overflow-hidden rounded-2xl border border-white/20 bg-white/10 dark:border-white/10 dark:bg-white/5 opacity-0 animate-[gasFade_.6s_ease-out_forwards] [animation-delay:200ms]">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-white/10 bg-white/10 dark:border-white/10 dark:bg-white/5">
@@ -187,7 +220,8 @@ const GetAllStudentsPage = () => {
                   return (
                     <tr
                       key={String(id)}
-                      className="border-b border-white/10 last:border-b-0 hover:bg-white/5 dark:border-white/10"
+                      className="border-b border-white/10 last:border-b-0 hover:bg-white/5 dark:border-white/10 opacity-0 animate-[gasItemUp_.6s_ease-out_forwards]"
+                      style={{ animationDelay: `${80 + idx * 55}ms` }}
                     >
                       <td className="px-5 py-4 text-body-color dark:text-body-color-dark">
                         {String(id)}
