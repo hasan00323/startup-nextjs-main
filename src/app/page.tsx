@@ -6,7 +6,7 @@ import Contact from "@/components/Contact";
 import Features from "@/components/Features";
 import Hero from "@/components/Hero";
 import { Metadata } from "next";
-import CoursesPage from "@/components/Courses";
+import CoursesPage from "@/components/Courses/Builder/CourseBuilder";
 
 export const metadata: Metadata = {
   title: "Future Dev "

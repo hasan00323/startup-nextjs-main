@@ -7,309 +7,145 @@ const Hero = () => {
     <>
       <section
         id="home"
-        className="relative z-10 overflow-hidden bg-white pb-16 pt-[120px] dark:bg-gray-dark md:pb-[120px] md:pt-[150px] xl:pb-[160px] xl:pt-[180px] 2xl:pb-[200px] 2xl:pt-[210px]"
+        className="relative z-10 overflow-hidden bg-gray-50 pb-16 pt-32 dark:bg-[#0B0F19] md:pb-[120px] md:pt-[150px] xl:pb-[160px] xl:pt-[180px]"
       >
+        {/* ================= BACKGROUND GLOW EFFECTS ================= */}
+        <div className="absolute left-1/2 top-0 -z-10 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-[150px] dark:bg-blue-600/20"></div>
+        <div className="absolute right-0 top-1/4 -z-10 h-[400px] w-[400px] rounded-full bg-purple-500/10 blur-[120px] dark:bg-purple-600/15"></div>
+
         <div className="container">
-          <div className="-mx-4 flex flex-wrap">
-            <div className="w-full px-4">
-              <div className="mx-auto max-w-[850px] text-center">
-                <h1 className="mb-5 text-3xl font-extrabold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight opacity-0 animate-[fadeInUp_1s_ease-out_forwards]">
-                  Future Dev - Online Course Management Platform
+          <div className="-mx-4 flex flex-wrap items-center">
+            
+            {/* ================= LEFT SIDE: CONTENT ================= */}
+            <div className="w-full px-4 lg:w-1/2">
+              <div className="mb-12 max-w-[600px] lg:mb-0">
+                
+                {/* Badge */}
+                <div className="mb-6 inline-flex items-center rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-sm font-semibold text-blue-600 dark:text-blue-400 opacity-0 animate-[fadeInUp_.6s_ease-out_forwards] backdrop-blur-md">
+                  <span className="mr-2 flex h-2 w-2 rounded-full bg-blue-600 animate-pulse"></span>
+                  Future Dev Platform 2.0
+                </div>
+
+                <h1 className="mb-6 text-4xl font-extrabold leading-tight text-gray-900 dark:text-white sm:text-5xl md:text-[54px] md:leading-[1.15] opacity-0 animate-[fadeInUp_.6s_ease-out_forwards] [animation-delay:100ms]">
+                  Manage your courses with{" "}
+                  <span className="bg-gradient-to-r from-blue-600 to-purple-500 bg-clip-text text-transparent">
+                    Ultimate Clarity
+                  </span>
                 </h1>
 
-                <p className="mb-10 text-base leading-relaxed text-body-color dark:text-body-color-dark sm:text-lg md:text-xl opacity-0 animate-[fadeInUp_1.2s_ease-out_forwards]">
-                  Manage your courses, enrollments, and students in one place.
+                <p className="mb-10 text-lg leading-relaxed text-gray-600 dark:text-gray-400 opacity-0 animate-[fadeInUp_.6s_ease-out_forwards] [animation-delay:200ms]">
                   Future Dev gives instructors and admins a clean dashboard to
                   create courses, track progress, and control access with secure
-                  authentication.
+                  authentication. All in one place.
                 </p>
 
-                <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 opacity-0 animate-[fadeInUp_1.4s_ease-out_forwards]">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center opacity-0 animate-[fadeInUp_.6s_ease-out_forwards] [animation-delay:300ms]">
                   <Link
                     href="/signin"
                     className="
-                      ease-in-up shadow-btn hover:shadow-btn-hover
-                      bg-primary hover:bg-primary/90
                       inline-flex items-center justify-center
-                      rounded-2xl
-                      px-8 py-3.5
-                      text-base font-semibold text-white
+                      rounded-xl bg-blue-600 px-8 py-4
+                      text-base font-semibold text-white shadow-lg shadow-blue-500/30
                       transition duration-300
-                      active:scale-[0.99]
-                      hover:-translate-y-1
+                      hover:-translate-y-1 hover:bg-blue-500 hover:shadow-blue-500/40
+                      active:scale-[0.98]
                     "
                   >
-                    🚀 Get Started
+                    Get Started Free
+                    <svg className="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
                   </Link>
 
                   <Link
                     href="/courses"
                     className="
                       inline-flex items-center justify-center
-                      rounded-2xl
-                      border border-white/20
-                      bg-white/10
-                      px-8 py-3.5
-                      text-base font-semibold
-                      text-dark
-                      shadow-sm
-                      backdrop-blur-xl
-                      transition duration-300
-                      hover:bg-white/15 hover:border-white/30
-                      active:scale-[0.99]
-                      hover:-translate-y-1
+                      rounded-xl border border-gray-200 bg-white/50 px-8 py-4
+                      text-base font-semibold text-gray-900 shadow-sm
+                      backdrop-blur-xl transition duration-300
+                      hover:-translate-y-1 hover:bg-white/80 hover:border-gray-300
                       dark:border-white/10 dark:bg-white/5 dark:text-white
                       dark:hover:bg-white/10 dark:hover:border-white/20
+                      active:scale-[0.98]
                     "
                   >
-                    Discover
+                    Discover Courses
                   </Link>
                 </div>
-
-                <p className="mt-5 text-xs text-body-color/80 dark:text-body-color-dark/80 opacity-0 animate-[fadeInUp_1.6s_ease-out_forwards]">
-                  Create an account to access your dashboard and enrollments.
+                
+                <p className="mt-6 text-sm font-medium text-gray-500 dark:text-gray-500 opacity-0 animate-[fadeInUp_.6s_ease-out_forwards] [animation-delay:400ms]">
+                  No credit card required. Cancel anytime.
                 </p>
               </div>
             </div>
+
+            {/* ================= RIGHT SIDE: ABSTRACT DASHBOARD ================= */}
+            <div className="w-full px-4 lg:w-1/2 opacity-0 animate-[fadeInUp_1s_ease-out_forwards] [animation-delay:300ms]">
+              <div className="relative mx-auto w-full max-w-[550px] animate-[float_6s_ease-in-out_infinite]">
+                
+                {/* Main Glass Panel */}
+                <div className="relative z-10 overflow-hidden rounded-2xl border border-gray-200 bg-white/60 p-6 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#0B1220]/60 sm:p-8">
+                  {/* Fake MacOS Window Dots */}
+                  <div className="mb-6 flex gap-2">
+                    <div className="h-3 w-3 rounded-full bg-red-400"></div>
+                    <div className="h-3 w-3 rounded-full bg-yellow-400"></div>
+                    <div className="h-3 w-3 rounded-full bg-green-400"></div>
+                  </div>
+
+                  <h3 className="mb-2 text-lg font-bold text-gray-900 dark:text-white">Active Courses Overview</h3>
+                  <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">Monitoring real-time student progress</p>
+
+                  {/* Fake Progress Bars */}
+                  <div className="space-y-5">
+                    {[
+                      { title: "Advanced React Patterns", percent: "85%", color: "bg-blue-500" },
+                      { title: "Next.js App Router Mastery", percent: "60%", color: "bg-purple-500" },
+                      { title: "C# & .NET Microservices", percent: "40%", color: "bg-green-500" },
+                    ].map((item, index) => (
+                      <div key={index} className="rounded-xl border border-gray-100 bg-white p-3 shadow-sm dark:border-white/5 dark:bg-white/5">
+                        <div className="mb-2 flex justify-between text-sm">
+                          <span className="font-semibold text-gray-800 dark:text-gray-200">{item.title}</span>
+                          <span className="font-bold text-gray-900 dark:text-white">{item.percent}</span>
+                        </div>
+                        <div className="h-2 w-full rounded-full bg-gray-100 dark:bg-gray-800">
+                          <div className={`h-2 rounded-full ${item.color}`} style={{ width: item.percent }}></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Floating Element 1 (Total Students) */}
+                <div className="absolute -right-6 top-20 z-20 flex animate-[float_5s_ease-in-out_infinite_reverse] items-center gap-4 rounded-2xl border border-gray-200 bg-white/80 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-[#151E32]/80 sm:-right-12">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">Total Students</p>
+                    <p className="text-xl font-extrabold text-gray-900 dark:text-white">12,450</p>
+                  </div>
+                </div>
+
+                {/* Floating Element 2 (Revenue / Success) */}
+                <div className="absolute -bottom-8 -left-6 z-20 flex animate-[float_7s_ease-in-out_infinite] items-center gap-4 rounded-2xl border border-gray-200 bg-white/80 p-4 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-[#151E32]/80 sm:-left-12">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">System Status</p>
+                    <p className="text-lg font-extrabold text-gray-900 dark:text-white">All Systems Go</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
           </div>
-        </div>
-
-        <div className="absolute right-0 top-0 z-[-1] opacity-30 lg:opacity-100 animate-[float_8s_ease-in-out_infinite]">
-          <svg
-            width="450"
-            height="556"
-            viewBox="0 0 450 556"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="277" cy="63" r="225" fill="url(#paint0_linear_25:217)" />
-            <circle
-              cx="17.9997"
-              cy="182"
-              r="18"
-              fill="url(#paint1_radial_25:217)"
-            />
-            <circle
-              cx="76.9997"
-              cy="288"
-              r="34"
-              fill="url(#paint2_radial_25:217)"
-            />
-            <circle
-              cx="325.486"
-              cy="302.87"
-              r="180"
-              transform="rotate(-37.6852 325.486 302.87)"
-              fill="url(#paint3_linear_25:217)"
-            />
-            <circle
-              opacity="0.8"
-              cx="184.521"
-              cy="315.521"
-              r="132.862"
-              transform="rotate(114.874 184.521 315.521)"
-              stroke="url(#paint4_linear_25:217)"
-            />
-            <circle
-              opacity="0.8"
-              cx="356"
-              cy="290"
-              r="179.5"
-              transform="rotate(-30 356 290)"
-              stroke="url(#paint5_linear_25:217)"
-            />
-            <circle
-              opacity="0.8"
-              cx="191.659"
-              cy="302.659"
-              r="133.362"
-              transform="rotate(133.319 191.659 302.659)"
-              fill="url(#paint6_linear_25:217)"
-            />
-            <defs>
-              <linearGradient
-                id="paint0_linear_25:217"
-                x1="-54.5003"
-                y1="-178"
-                x2="222"
-                y2="288"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" />
-                <stop offset="1" stopColor="#4A6CF7" stopOpacity="0" />
-              </linearGradient>
-              <radialGradient
-                id="paint1_radial_25:217"
-                cx="0"
-                cy="0"
-                r="1"
-                gradientUnits="userSpaceOnUse"
-                gradientTransform="translate(17.9997 182) rotate(90) scale(18)"
-              >
-                <stop offset="0.145833" stopColor="#4A6CF7" stopOpacity="0" />
-                <stop offset="1" stopColor="#4A6CF7" stopOpacity="0.08" />
-              </radialGradient>
-              <radialGradient
-                id="paint2_radial_25:217"
-                cx="0"
-                cy="0"
-                r="1"
-                gradientUnits="userSpaceOnUse"
-                gradientTransform="translate(76.9997 288) rotate(90) scale(34)"
-              >
-                <stop offset="0.145833" stopColor="#4A6CF7" stopOpacity="0" />
-                <stop offset="1" stopColor="#4A6CF7" stopOpacity="0.08" />
-              </radialGradient>
-              <linearGradient
-                id="paint3_linear_25:217"
-                x1="226.775"
-                y1="-66.1548"
-                x2="292.157"
-                y2="351.421"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" />
-                <stop offset="1" stopColor="#4A6CF7" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient
-                id="paint4_linear_25:217"
-                x1="184.521"
-                y1="182.159"
-                x2="184.521"
-                y2="448.882"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" />
-                <stop offset="1" stopColor="white" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient
-                id="paint5_linear_25:217"
-                x1="356"
-                y1="110"
-                x2="356"
-                y2="470"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" />
-                <stop offset="1" stopColor="white" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient
-                id="paint6_linear_25:217"
-                x1="118.524"
-                y1="29.2497"
-                x2="166.965"
-                y2="338.63"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" />
-                <stop offset="1" stopColor="#4A6CF7" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-
-        <div className="absolute bottom-0 left-0 z-[-1] opacity-30 lg:opacity-100 animate-[float_10s_ease-in-out_infinite]">
-          <svg
-            width="364"
-            height="201"
-            viewBox="0 0 364 201"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M5.88928 72.3303C33.6599 66.4798 101.397 64.9086 150.178 105.427C211.155 156.076 229.59 162.093 264.333 166.607C299.076 171.12 337.718 183.657 362.889 212.24"
-              stroke="url(#paint0_linear_25:218)"
-            />
-            <path
-              d="M-22.1107 72.3303C5.65989 66.4798 73.3965 64.9086 122.178 105.427C183.155 156.076 201.59 162.093 236.333 166.607C271.076 171.12 309.718 183.657 334.889 212.24"
-              stroke="url(#paint1_linear_25:218)"
-            />
-            <path
-              d="M-53.1107 72.3303C-25.3401 66.4798 42.3965 64.9086 91.1783 105.427C152.155 156.076 170.59 162.093 205.333 166.607C240.076 171.12 278.718 183.657 303.889 212.24"
-              stroke="url(#paint2_linear_25:218)"
-            />
-            <path
-              d="M-98.1618 65.0889C-68.1416 60.0601 4.73364 60.4882 56.0734 102.431C120.248 154.86 139.905 161.419 177.137 166.956C214.37 172.493 255.575 186.165 281.856 215.481"
-              stroke="url(#paint3_linear_25:218)"
-            />
-            <circle
-              opacity="0.8"
-              cx="214.505"
-              cy="60.5054"
-              r="49.7205"
-              transform="rotate(-13.421 214.505 60.5054)"
-              stroke="url(#paint4_linear_25:218)"
-            />
-            <circle cx="220" cy="63" r="43" fill="url(#paint5_radial_25:218)" />
-            <defs>
-              <linearGradient
-                id="paint0_linear_25:218"
-                x1="184.389"
-                y1="69.2405"
-                x2="184.389"
-                y2="212.24"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" stopOpacity="0" />
-                <stop offset="1" stopColor="#4A6CF7" />
-              </linearGradient>
-              <linearGradient
-                id="paint1_linear_25:218"
-                x1="156.389"
-                y1="69.2405"
-                x2="156.389"
-                y2="212.24"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" stopOpacity="0" />
-                <stop offset="1" stopColor="#4A6CF7" />
-              </linearGradient>
-              <linearGradient
-                id="paint2_linear_25:218"
-                x1="125.389"
-                y1="69.2405"
-                x2="125.389"
-                y2="212.24"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" stopOpacity="0" />
-                <stop offset="1" stopColor="#4A6CF7" />
-              </linearGradient>
-              <linearGradient
-                id="paint3_linear_25:218"
-                x1="93.8507"
-                y1="67.2674"
-                x2="89.9278"
-                y2="210.214"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" stopOpacity="0" />
-                <stop offset="1" stopColor="#4A6CF7" />
-              </linearGradient>
-              <linearGradient
-                id="paint4_linear_25:218"
-                x1="214.505"
-                y1="10.2849"
-                x2="212.684"
-                y2="99.5816"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" />
-                <stop offset="1" stopColor="#4A6CF7" stopOpacity="0" />
-              </linearGradient>
-              <radialGradient
-                id="paint5_radial_25:218"
-                cx="0"
-                cy="0"
-                r="1"
-                gradientUnits="userSpaceOnUse"
-                gradientTransform="translate(220 63) rotate(90) scale(43)"
-              >
-                <stop offset="0.145833" stopColor="white" stopOpacity="0" />
-                <stop offset="1" stopColor="white" stopOpacity="0.08" />
-              </radialGradient>
-            </defs>
-          </svg>
         </div>
       </section>
 
@@ -317,7 +153,7 @@ const Hero = () => {
         @keyframes fadeInUp {
           0% {
             opacity: 0;
-            transform: translateY(40px);
+            transform: translateY(30px);
           }
           100% {
             opacity: 1;
@@ -329,7 +165,7 @@ const Hero = () => {
             transform: translateY(0px);
           }
           50% {
-            transform: translateY(-20px);
+            transform: translateY(-15px);
           }
           100% {
             transform: translateY(0px);

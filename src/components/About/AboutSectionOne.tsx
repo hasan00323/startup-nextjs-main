@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import SectionTitle from "../Common/SectionTitle";
 
@@ -8,118 +10,92 @@ const checkIcon = (
 );
 
 const AboutSectionOne = () => {
-  const List = ({ text }) => (
-    <p className="text-body-color mb-5 flex items-center text-lg font-medium opacity-0 animate-[aboutItemUp_.6s_ease-out_forwards]">
-      <span className="bg-primary/10 text-primary mr-4 flex h-[30px] w-[30px] items-center justify-center rounded-md opacity-0 animate-[aboutIconPop_.55s_ease-out_forwards] [animation-delay:120ms]">
+  const List = ({ text, delay }: { text: string, delay: string }) => (
+    <div className={`flex items-center gap-4 mb-5 opacity-0 animate-[fadeInUp_.6s_ease-out_forwards] ${delay}`}>
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-sm backdrop-blur-md dark:bg-white/10 dark:text-white">
         {checkIcon}
-      </span>
-      {text}
-    </p>
+      </div>
+      <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+        {text}
+      </p>
+    </div>
   );
 
   return (
-    <>
-      <section
-        id="about"
-        className="pt-16 md:pt-20 lg:pt-28 opacity-0 animate-[aboutSectionIn_.6s_ease-out_forwards]"
-      >
-        <div className="container">
-          <div className="border-b border-body-color/[.15] pb-16 dark:border-white/[.15] md:pb-20 lg:pb-28">
-            <div className="-mx-4 flex flex-wrap items-center">
-              <div className="w-full px-4 lg:w-1/2">
-                <div className="opacity-0 animate-[aboutTextIn_.65s_ease-out_forwards] [animation-delay:120ms]">
-                  <SectionTitle
-                    title="About Future Dev"
-                    paragraph="Future Dev is an online course management platform designed for modern learning. Students can discover courses, enroll in seconds, and track progress in one place, while instructors and admins manage courses, enrollments, and student records through a clean and secure dashboard."
-                    mb="44px"
-                  />
-                </div>
+    <section id="about" className="relative overflow-hidden pt-16 md:pt-20 lg:pt-28">
+      
+      {/* Background Glows لربط التصميم بباقي الموقع */}
+      <div className="absolute left-0 top-1/4 -z-10 h-[400px] w-[400px] rounded-full bg-primary/5 blur-[120px] dark:bg-primary/10"></div>
 
-                <div
-                  className="mb-12 max-w-[570px] lg:mb-0 opacity-0 animate-[aboutTextIn_.65s_ease-out_forwards] [animation-delay:200ms]"
-                  data-wow-delay=".15s"
-                >
-                  <div className="mx-[-12px] flex flex-wrap">
-                    <div className="w-full px-3 sm:w-1/2 lg:w-full xl:w-1/2">
-                      <div className="opacity-0 animate-[aboutColIn_.6s_ease-out_forwards] [animation-delay:260ms]">
-                        <List text="Browse & search courses easly" />
-                      </div>
-                      <div className="opacity-0 animate-[aboutColIn_.6s_ease-out_forwards] [animation-delay:320ms]">
-                        <List text="Instant enrollment + progress tracking" />
-                      </div>
-                      <div className="opacity-0 animate-[aboutColIn_.6s_ease-out_forwards] [animation-delay:380ms]">
-                        <List text="Secure sign in with JWT authentication" />
-                      </div>
-                    </div>
+      <div className="container">
+        <div className="border-b border-gray-200 pb-16 dark:border-white/5 md:pb-20 lg:pb-28">
+          <div className="-mx-4 flex flex-wrap items-center">
+            
+            {/* ================= CONTENT SIDE ================= */}
+            <div className="w-full px-4 lg:w-1/2">
+              <div className="opacity-0 animate-[fadeInUp_.6s_ease-out_forwards]">
+                <SectionTitle
+                  title="About Future Dev"
+                  paragraph="Future Dev is an online course management platform designed for modern learning. Students can discover courses, enroll in seconds, and track progress in one place, while instructors manage everything through a clean dashboard."
+                  mb="44px"
+                />
+              </div>
 
-                    <div className="w-full px-3 sm:w-1/2 lg:w-full xl:w-1/2">
-                      <div className="opacity-0 animate-[aboutColIn_.6s_ease-out_forwards] [animation-delay:260ms]">
-                        <List text="Instructor tools to create & manage courses" />
-                      </div>
-                      <div className="opacity-0 animate-[aboutColIn_.6s_ease-out_forwards] [animation-delay:320ms]">
-                        <List text="Enrollment management for admins" />
-                      </div>
-                      <div className="opacity-0 animate-[aboutColIn_.6s_ease-out_forwards] [animation-delay:380ms]">
-                        <List text="Modern UI built Design" />
-                      </div>
-                    </div>
+              <div className="mb-12 max-w-[570px] lg:mb-0">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                  <div>
+                    <List text="Easy Course Search" delay="[animation-delay:200ms]" />
+                    <List text="Instant Enrollment" delay="[animation-delay:300ms]" />
+                    <List text="Secure JWT Auth" delay="[animation-delay:400ms]" />
+                  </div>
+                  <div>
+                    <List text="Instructor Tools" delay="[animation-delay:250ms]" />
+                    <List text="Admin Dashboard" delay="[animation-delay:350ms]" />
+                    <List text="Modern SaaS UI" delay="[animation-delay:450ms]" />
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="w-full px-4 lg:w-1/2">
-                <div className="relative mx-auto aspect-25/24 max-w-[500px] lg:mr-0 opacity-0 animate-[aboutImageIn_.7s_ease-out_forwards] [animation-delay:200ms]">
+            {/* ================= IMAGE SIDE ================= */}
+            <div className="w-full px-4 lg:w-1/2">
+              <div className="relative mx-auto aspect-square max-w-[500px] opacity-0 animate-[fadeInUp_.8s_ease-out_forwards] [animation-delay:300ms]">
+                
+                {/* Decorative Gradient Background behind image */}
+                <div className="absolute inset-0 scale-90 rounded-full bg-gradient-to-tr from-primary/20 to-purple-500/20 blur-3xl animate-pulse"></div>
+
+                <div className="relative h-full w-full animate-[float_8s_ease-in-out_infinite]">
                   <Image
                     src="/images/about/about-image.svg"
-                    alt="Future Dev platform preview"
+                    alt="Platform preview"
                     fill
-                    className="mx-auto max-w-full drop-shadow-three dark:hidden dark:drop-shadow-none lg:mr-0 animate-[aboutFloat_8s_ease-in-out_infinite]"
+                    className="object-contain drop-shadow-2xl dark:hidden"
                   />
                   <Image
                     src="/images/about/about-image-dark.svg"
-                    alt="Future Dev platform preview"
+                    alt="Platform preview"
                     fill
-                    className="mx-auto hidden max-w-full drop-shadow-three dark:block dark:drop-shadow-none lg:mr-0 animate-[aboutFloat_8s_ease-in-out_infinite]"
+                    className="hidden object-contain drop-shadow-2xl dark:block"
                   />
                 </div>
               </div>
             </div>
+
           </div>
         </div>
-      </section>
+      </div>
 
-      <style>{`
-        @keyframes aboutSectionIn {
-          0% { opacity: 0; transform: translateY(10px); }
+      <style jsx global>{`
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(30px); }
           100% { opacity: 1; transform: translateY(0); }
         }
-        @keyframes aboutTextIn {
-          0% { opacity: 0; transform: translateY(10px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes aboutColIn {
-          0% { opacity: 0; transform: translateY(10px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes aboutItemUp {
-          0% { opacity: 0; transform: translateY(10px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes aboutIconPop {
-          0% { opacity: 0; transform: scale(0.9); }
-          100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes aboutImageIn {
-          0% { opacity: 0; transform: translateY(14px) scale(0.98); }
-          100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes aboutFloat {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-14px); }
-          100% { transform: translateY(0px); }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
         }
       `}</style>
-    </>
+    </section>
   );
 };
 

@@ -53,7 +53,7 @@ const SigninPage = () => {
         throw new Error(msg);
       }
 
-      const data: any = await res.json();
+      const data = await res.json();
       const root = data?.value ?? data?.data ?? data?.result ?? data;
 
       const token =
@@ -117,191 +117,175 @@ const SigninPage = () => {
 
   return (
     <>
-      <section
-        className="relative z-10 overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[170px] lg:pb-24 opacity-0 animate-[pageFade_.5s_ease-out_forwards]"
-        style={{ marginTop: "-60px" }}
-      >
-        <div className="container">
-          <div className="-mx-4 flex flex-wrap justify-center">
-            <div className="w-full px-4">
-              <div
-                className="
-                  mx-auto
-                  w-full
-                  max-w-[92%]
-                  sm:max-w-[440px]
-                  rounded-2xl
-                  border border-white/20
-                  bg-white/10
-                  p-6
-                  shadow-three
-                  backdrop-blur-xl
-                  ring-1 ring-white/10
-                  dark:border-white/10
-                  dark:bg-white/5
-                  dark:ring-white/10
-                  sm:p-8
-                  opacity-0 animate-[cardFade_.6s_ease-out_forwards]
-                "
-              >
-                <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-black dark:bg-white/10 dark:text-white opacity-0 animate-[itemUp_.6s_ease-out_forwards] [animation-delay:80ms]">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <main className="flex min-h-screen w-full bg-[#0B0F19] opacity-0 animate-[pageFade_.5s_ease-out_forwards]">
+        
+        {/* ================= LEFT SIDE: FORM ================= */}
+        <div className="flex w-full flex-col justify-center px-6 lg:w-1/2 xl:w-[45%] 2xl:w-[40%]" style={{ marginLeft: "120px" }}  >
+          <div className="mx-auto w-full max-w-[440px] opacity-0 animate-[cardFade_.6s_ease-out_forwards]">
+            
+            <div className="mb-8 text-left">
+              <h3 className="mb-2 text-3xl font-bold text-white opacity-0 animate-[itemUp_.6s_ease-out_forwards] [animation-delay:120ms]">
+                Welcome back
+              </h3>
+              <p className="text-sm font-medium text-gray-400 opacity-0 animate-[itemUp_.6s_ease-out_forwards] [animation-delay:180ms]">
+                Sign in to continue to Future Dev.
+              </p>
+            </div>
+
+            {error && (
+              <div className="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 opacity-0 animate-[itemUp_.4s_ease-out_forwards]">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="opacity-0 animate-[itemUp_.6s_ease-out_forwards] [animation-delay:220ms]">
+                <label className="mb-2 block text-sm font-semibold text-white">
+                  Email
+                </label>
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition duration-300 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-gray-400">
                     <path
-                      d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2.25c-4.2 0-7.5 2.1-7.5 4.5v.75h15v-.75c0-2.4-3.3-4.5-7.5-4.5Z"
-                      fill="currentColor"
-                      opacity="0.9"
+                      d="M4 6.5h16v11H4v-11Zm1.5 1.6 6.2 4.8c.2.2.5.2.7 0l6.1-4.8"
+                      stroke="currentColor"
+                      strokeWidth="1.7"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full bg-transparent text-sm text-white outline-none placeholder:text-gray-500"
+                  />
                 </div>
-
-                <h3 className="mb-1 text-center text-2xl font-bold text-black dark:text-white opacity-0 animate-[itemUp_.6s_ease-out_forwards] [animation-delay:120ms]">
-                  Welcome back
-                </h3>
-                <p className="text-body-color dark:text-body-color-dark mb-7 text-center text-sm font-medium opacity-0 animate-[itemUp_.6s_ease-out_forwards] [animation-delay:180ms]">
-                  Sign in to continue to Future Dev.
+                <p className="mt-2 text-xs text-gray-500">
+                  Use the same email you registered with.
                 </p>
+              </div>
 
-                {error && (
-                  <div className="mb-5 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400 opacity-0 animate-[itemUp_.4s_ease-out_forwards]">
-                    {error}
-                  </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="opacity-0 animate-[itemUp_.6s_ease-out_forwards] [animation-delay:220ms]">
-                    <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
-                      Email
-                    </label>
-
-                    <div className="flex items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-3 dark:border-white/10 dark:bg-white/5 transition duration-300 focus-within:ring-2 focus-within:ring-primary/40">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-70">
-                        <path
-                          d="M4 6.5h16v11H4v-11Zm1.5 1.6 6.2 4.8c.2.2.5.2.7 0l6.1-4.8"
-                          stroke="currentColor"
-                          strokeWidth="1.7"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-
-                      <input
-                        type="email"
-                        name="email"
-                        placeholder="you@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="
-                          w-full bg-transparent text-sm text-black outline-none
-                          placeholder:text-black/50
-                          dark:text-white dark:placeholder:text-white/40
-                        "
-                      />
-                    </div>
-
-                    <p className="text-body-color dark:text-body-color-dark mt-2 text-xs">
-                      Use the same email you registered with.
-                    </p>
-                  </div>
-
-                  <div className="opacity-0 animate-[itemUp_.6s_ease-out_forwards] [animation-delay:300ms]">
-                    <label className="mb-2 block text-sm font-semibold text-black dark:text-white">
-                      Password
-                    </label>
-
-                    <div className="flex items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-3 dark:border-white/10 dark:bg-white/5 transition duration-300 focus-within:ring-2 focus-within:ring-primary/40">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-70">
-                        <path
-                          d="M7 11V8.8A5 5 0 0 1 12 4a5 5 0 0 1 5 4.8V11"
-                          stroke="currentColor"
-                          strokeWidth="1.7"
-                          strokeLinecap="round"
-                        />
-                        <path
-                          d="M7 11h10v9H7v-9Z"
-                          stroke="currentColor"
-                          strokeWidth="1.7"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-
-                      <input
-                        type="password"
-                        name="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="
-                          w-full bg-transparent text-sm text-black outline-none
-                          placeholder:text-black/50
-                          dark:text-white dark:placeholder:text-white/40
-                        "
-                      />
-                    </div>
-
-                    <div className="mt-3 flex items-center justify-between">
-                      <span className="text-body-color dark:text-body-color-dark text-xs">
-                        If you forgot your password, you can reset it.
-                      </span>
-
-                      <Link
-                        href="/auth/resetPassword"
-                        className="text-primary text-xs font-semibold hover:underline"
-                      >
-                        Forgot password?
-                      </Link>
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={!canSubmit}
-                    className="
-                      shadow-submit dark:shadow-submit-dark
-                      bg-primary hover:bg-primary/90
-                      w-full rounded-xl px-10 py-3.5
-                      text-sm font-semibold text-white
-                      transition duration-300
-                      disabled:opacity-60
-                      opacity-0 animate-[itemUp_.6s_ease-out_forwards]
-                      [animation-delay:380ms]
-                    "
-                  >
-                    {loading ? "Signing in..." : "Sign in"}
-                  </button>
-                </form>
-
-                <div className="my-6 flex items-center gap-4 opacity-0 animate-[itemUp_.6s_ease-out_forwards] [animation-delay:440ms]">
-                  <div className="h-px w-full bg-white/10" />
-                  <span className="text-body-color dark:text-body-color-dark text-xs">
-                    or
-                  </span>
-                  <div className="h-px w-full bg-white/10" />
+              <div className="opacity-0 animate-[itemUp_.6s_ease-out_forwards] [animation-delay:300ms]">
+                <label className="mb-2 block text-sm font-semibold text-white">
+                  Password
+                </label>
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition duration-300 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-gray-400">
+                    <path
+                      d="M7 11V8.8A5 5 0 0 1 12 4a5 5 0 0 1 5 4.8V11"
+                      stroke="currentColor"
+                      strokeWidth="1.7"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M7 11h10v9H7v-9Z"
+                      stroke="currentColor"
+                      strokeWidth="1.7"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full bg-transparent text-sm text-white outline-none placeholder:text-gray-500"
+                  />
                 </div>
 
-                <Link
-                  href="/signup"
-                  className="
-                    block w-full rounded-xl
-                    border border-white/20
-                    bg-white/10
-                    px-10 py-3.5
-                    text-center text-sm font-semibold
-                    text-black transition duration-300
-                    hover:bg-white/15
-                    dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
-                    opacity-0 animate-[itemUp_.6s_ease-out_forwards]
-                    [animation-delay:500ms]
-                  "
-                >
-                  Create a new account
-                </Link>
+                <div className="mt-3 flex items-center justify-between">
+                  <span className="text-xs text-gray-500">
+                    If you forgot your password, you can reset it.
+                  </span>
+                  <Link
+                    href="/auth/resetPassword"
+                    className="text-xs font-semibold text-blue-500 transition hover:text-blue-400 hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
               </div>
+
+              <button
+                type="submit"
+                disabled={!canSubmit}
+                className="
+                  w-full rounded-xl bg-blue-600 px-10 py-3.5
+                  text-sm font-semibold text-white shadow-lg
+                  transition duration-300 hover:bg-blue-500
+                  disabled:opacity-60
+                  opacity-0 animate-[itemUp_.6s_ease-out_forwards]
+                  [animation-delay:380ms]
+                "
+              >
+                {loading ? "Signing in..." : "Sign in"}
+              </button>
+            </form>
+
+            <div className="my-6 flex items-center gap-4 opacity-0 animate-[itemUp_.6s_ease-out_forwards] [animation-delay:440ms]">
+              <div className="h-px w-full bg-white/10" />
+              <span className="text-xs text-gray-500">or</span>
+              <div className="h-px w-full bg-white/10" />
             </div>
+
+            <Link
+              href="/signup"
+              className="
+                block w-full rounded-xl
+                border border-white/10
+                bg-white/5
+                px-10 py-3.5
+                text-center text-sm font-semibold
+                text-white transition duration-300
+                hover:bg-white/10
+                opacity-0 animate-[itemUp_.6s_ease-out_forwards]
+                [animation-delay:500ms]
+              "
+            >
+              Create a new account
+            </Link>
           </div>
         </div>
-      </section>
+
+        {/* ================= RIGHT SIDE: BRANDING & IMAGE ================= */}
+        <div className="relative hidden w-full items-center justify-center overflow-hidden lg:flex lg:w-1/2 xl:w-[55%] 2xl:w-[60%]">
+          {/* يمكنك تغيير الرابط في الأسفل بصورة الخلفية الخاصة بالشركة */}
+          <div 
+            className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat opacity-40 mix-blend-luminosity"
+          ></div>
+          
+          {/* Gradient Overlay لدمج الصورة مع الواجهة بسلاسة */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B0F19] via-[#0B0F19]/60 to-transparent"></div>
+
+          {/* محتوى اليمين (اللوجو والنص) */}
+          <div className="relative z-10 flex flex-col items-center text-center opacity-0 animate-[itemUp_.8s_ease-out_forwards] [animation-delay:400ms]">
+            
+            {/* الشعار (Logo) - يمكنك استبدال الـ SVG بصورة شعاركم */}
+            <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-2xl border border-white/20 bg-white/10 shadow-2xl backdrop-blur-md">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" className="text-white">
+                <path
+                  d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2.25c-4.2 0-7.5 2.1-7.5 4.5v.75h15v-.75c0-2.4-3.3-4.5-7.5-4.5Z"
+                  fill="currentColor"
+                  opacity="0.9"
+                />
+              </svg>
+            </div>
+            
+            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+              Future Dev
+            </h1>
+            <p className="mt-4 max-w-md text-lg text-gray-300">
+              Welcome back to our platform. Let's continue building the future of software development together.
+            </p>
+          </div>
+        </div>
+
+      </main>
 
       <style>{`
         @keyframes pageFade {
@@ -309,11 +293,11 @@ const SigninPage = () => {
           100% { opacity: 1; }
         }
         @keyframes cardFade {
-          0% { opacity: 0; transform: translateY(14px) scale(0.98); }
-          100% { opacity: 1; transform: translateY(0) scale(1); }
+          0% { opacity: 0; transform: translateX(-20px); }
+          100% { opacity: 1; transform: translateX(0); }
         }
         @keyframes itemUp {
-          0% { opacity: 0; transform: translateY(10px); }
+          0% { opacity: 0; transform: translateY(15px); }
           100% { opacity: 1; transform: translateY(0); }
         }
       `}</style>

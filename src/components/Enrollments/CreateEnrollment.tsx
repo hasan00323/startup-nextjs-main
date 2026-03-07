@@ -7,8 +7,8 @@ import { apiFetch } from "@/lib/api";
 const CreateEnrollmentPage = () => {
   const router = useRouter();
 
-  const [studentId, setStudentId] = useState<number>(0);
-  const [courseId, setCourseId] = useState<number>(0);
+  const [studentId, setStudentId] = useState<number | "">("");
+  const [courseId, setCourseId] = useState<number | "">("");
 
   // datetime-local default
   const [createdAt, setCreatedAt] = useState<string>(
@@ -28,218 +28,232 @@ const CreateEnrollmentPage = () => {
     if (!token) router.push("/signin");
   }, [token, router]);
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  setLoading(true);
-  setError(null);
-  setSuccess(null);
-
-  const body = {
-    studentId,
-    courseId,
-    createdAt: new Date(createdAt).toISOString(),
-  };
-
-  try {
-    if (!token) {
-      router.push("/signin");
+    if (!studentId || !courseId) {
+      setError("Please fill in all required fields.");
       return;
     }
 
-    const res = await apiFetch(
-      "https://localhost:7145/api/enrollments/CreateEnrollment",
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-      },
-      router
-    );
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
 
-    if (!res.ok) {
-      const contentType = res.headers.get("content-type") || "";
-      const msg = contentType.includes("application/json")
-        ? await res.json().then((j) => j?.message || j?.error || JSON.stringify(j))
-        : await res.text().catch(() => "");
+    const body = {
+      studentId: Number(studentId),
+      courseId: Number(courseId),
+      createdAt: new Date(createdAt).toISOString(),
+    };
 
-      throw new Error(msg || `Request failed (${res.status})`);
+    try {
+      if (!token) {
+        router.push("/signin");
+        return;
+      }
+
+      const res = await apiFetch(
+        "https://localhost:7145/api/enrollments/CreateEnrollment",
+        {
+          method: "POST",
+          body: JSON.stringify(body),
+        },
+        router
+      );
+
+      if (!res.ok) {
+        const contentType = res.headers.get("content-type") || "";
+        const msg = contentType.includes("application/json")
+          ? await res.json().then((j) => j?.message || j?.error || JSON.stringify(j))
+          : await res.text().catch(() => "");
+
+        throw new Error(msg || `Request failed (${res.status})`);
+      }
+
+      setSuccess("Enrollment created successfully. Redirecting...");
+      setTimeout(() => router.push("/enrollments"), 1000);
+    } catch (err: any) {
+      setError(err?.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    setSuccess("Enrollment created successfully ✅ Redirecting...");
-    setTimeout(() => router.push("/enrollments"), 700);
-  } catch (err: any) {
-    setError(err?.message || "Something went wrong");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
+  // CSS classes for reuse
   const inputClass =
-    "w-full rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-sm text-black/90 shadow-sm outline-none transition duration-300 placeholder:text-black/40 focus:border-primary/40 focus:ring-2 focus:ring-primary/20 dark:border-white/10 dark:bg-white/5 dark:text-white/90 dark:placeholder:text-white/40";
-
+    "w-full rounded-xl border border-black/10 bg-white/50 px-4 py-3.5 text-sm font-medium text-black outline-none transition duration-300 placeholder:text-black/40 focus:border-primary focus:ring-1 focus:ring-primary dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/40 dark:focus:border-primary/50 dark:focus:ring-primary/50";
+  
   const labelClass =
-    "mb-2 block text-sm font-semibold text-black dark:text-white";
-
+    "mb-2 block text-sm font-bold text-black dark:text-white";
+  
   const helperClass =
-    "mt-2 text-xs text-body-color dark:text-body-color-dark";
+    "mt-2 text-xs font-medium text-black/50 dark:text-white/50 pl-1";
 
   return (
-    <section className="relative z-10 overflow-hidden pt-28 pb-16 md:pt-36 md:pb-20 lg:pt-[160px] lg:pb-28">
-      <div className="container">
-        <div className="-mx-4 flex flex-wrap justify-center">
-          <div className="w-full px-4">
-            <div
-              className="
-                mx-auto
-                w-full
-                max-w-[560px]
-                rounded-3xl
-                border border-white/15
-                bg-white/10
-                px-6 py-8
-                shadow-two
-                backdrop-blur-xl
-                dark:border-white/10
-                dark:bg-white/5
-                sm:px-10 sm:py-10
-              "
-            >
-              <div className="mb-7 text-center">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary dark:bg-white/10 dark:text-white">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M12 5v14M5 12h14"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
+    <>
+      <section className="relative z-10 min-h-screen overflow-hidden pt-36 pb-16 md:pb-20 lg:pt-[170px] lg:pb-24 opacity-0 animate-[fadeInUp_.6s_ease-out_forwards]">
+        
+        {/* Glow Effect للخلفية */}
+        <div className="absolute left-1/2 top-10 -z-10 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]"></div>
+
+        <div className="container">
+          <div className="-mx-4 flex flex-wrap justify-center">
+            <div className="w-full px-4">
+              <div
+                className="
+                  mx-auto w-full max-w-[650px]
+                  rounded-[2rem] border border-black/5
+                  bg-white/80 p-6 shadow-2xl backdrop-blur-2xl
+                  dark:border-white/10 dark:bg-[#0B1220]/80
+                  sm:p-10
+                "
+              >
+                {/* Header */}
+                <div className="mb-8 text-center opacity-0 animate-[fadeInUp_.6s_ease-out_forwards] [animation-delay:100ms]">
+                  <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-tr from-primary to-blue-400 text-white shadow-lg">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                      <circle cx="8.5" cy="7" r="4" />
+                      <line x1="20" y1="8" x2="20" y2="14" />
+                      <line x1="23" y1="11" x2="17" y2="11" />
+                    </svg>
+                  </div>
+
+                  <h3 className="text-3xl font-extrabold tracking-tight text-black dark:text-white">
+                    Create Enrollment
+                  </h3>
+                  <p className="mt-2 text-sm font-medium text-body-color dark:text-body-color-dark">
+                    Assign a student to a specific course securely.
+                  </p>
+                </div>
+
+                {/* Alerts */}
+                {error && (
+                  <div className="mb-6 flex items-center gap-3 rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-4 text-sm font-medium text-red-600 dark:text-red-400 opacity-0 animate-[fadeInUp_.6s_ease-out_forwards]">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    {error}
+                  </div>
+                )}
+
+                {success && (
+                  <div className="mb-6 flex items-center gap-3 rounded-2xl border border-green-500/30 bg-green-500/10 px-5 py-4 text-sm font-medium text-green-700 dark:text-green-400 opacity-0 animate-[fadeInUp_.6s_ease-out_forwards]">
+                    <svg className="h-5 w-5 animate-spin text-green-600 dark:text-green-400" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" strokeOpacity="0.3" />
+                      <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    {success}
+                  </div>
+                )}
+
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="space-y-6 opacity-0 animate-[fadeInUp_.6s_ease-out_forwards] [animation-delay:200ms]">
+                  
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    {/* Student ID */}
+                    <div>
+                      <label className={labelClass}>Student ID</label>
+                      <input
+                        type="number"
+                        min={1}
+                        value={studentId}
+                        onChange={(e) => setStudentId(e.target.value === "" ? "" : Number(e.target.value))}
+                        required
+                        className={inputClass}
+                        placeholder="e.g. 1042"
+                      />
+                      <p className={helperClass}>Must be a valid integer.</p>
+                    </div>
+
+                    {/* Course ID */}
+                    <div>
+                      <label className={labelClass}>Course ID</label>
+                      <input
+                        type="number"
+                        min={1}
+                        value={courseId}
+                        onChange={(e) => setCourseId(e.target.value === "" ? "" : Number(e.target.value))}
+                        required
+                        className={inputClass}
+                        placeholder="e.g. 5"
+                      />
+                      <p className={helperClass}>Must be a valid integer.</p>
+                    </div>
+                  </div>
+
+                  {/* Created At */}
+                  <div>
+                    <label className={labelClass}>Enrollment Date & Time</label>
+                    <input
+                      type="datetime-local"
+                      value={createdAt}
+                      onChange={(e) => setCreatedAt(e.target.value)}
+                      required
+                      className={inputClass}
                     />
-                  </svg>
-                </div>
+                    <p className={helperClass}>
+                      Defaults to current system time.
+                    </p>
+                  </div>
 
-                <h3 className="text-2xl font-extrabold tracking-tight text-black dark:text-white sm:text-3xl">
-                  Create Enrollment
-                </h3>
-                <p className="mt-2 text-sm text-body-color dark:text-body-color-dark">
-                  Add a new enrollment by filling the fields below.
-                </p>
+                  {/* Actions */}
+                  <div className="mt-8 flex flex-col gap-4 pt-4 sm:flex-row sm:items-center">
+                    <button
+                      type="button"
+                      onClick={() => router.push("/enrollments")}
+                      disabled={loading || !!success}
+                      className="
+                        flex w-full items-center justify-center rounded-xl border border-black/10 bg-white
+                        px-6 py-4 text-sm font-bold text-black shadow-sm
+                        transition duration-300 hover:bg-gray-50 active:scale-[0.98]
+                        dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10
+                        disabled:opacity-50 disabled:cursor-not-allowed sm:w-auto sm:flex-1
+                      "
+                    >
+                      Cancel
+                    </button>
+                    
+                    <button
+                      type="submit"
+                      disabled={loading || !!success}
+                      className="
+                        flex w-full items-center justify-center gap-2 rounded-xl bg-primary
+                        px-6 py-4 text-sm font-bold text-white shadow-lg shadow-primary/30
+                        transition duration-300 hover:bg-primary/90 active:scale-[0.98]
+                        disabled:opacity-60 disabled:cursor-not-allowed sm:w-auto sm:flex-[2]
+                      "
+                    >
+                      {loading ? (
+                        <>
+                          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" strokeOpacity="0.3" />
+                            <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          Processing...
+                        </>
+                      ) : success ? (
+                        <>
+                          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                          Success
+                        </>
+                      ) : (
+                        "Confirm Enrollment"
+                      )}
+                    </button>
+                  </div>
+
+                </form>
               </div>
-
-              {error && (
-                <div className="mb-5 rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
-                  {error}
-                </div>
-              )}
-
-              {success && (
-                <div className="mb-5 rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-600 dark:text-emerald-400">
-                  {success}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className={labelClass}>Student ID</label>
-                  <input
-                    type="number"
-                    min={1}
-                    value={studentId || ""}
-                    onChange={(e) => setStudentId(Number(e.target.value))}
-                    required
-                    className={inputClass}
-                    placeholder="e.g. 12"
-                  />
-                  <p className={helperClass}>
-                    Must be a positive number.
-                  </p>
-                </div>
-
-                <div>
-                  <label className={labelClass}>Course ID</label>
-                  <input
-                    type="number"
-                    min={1}
-                    value={courseId || ""}
-                    onChange={(e) => setCourseId(Number(e.target.value))}
-                    required
-                    className={inputClass}
-                    placeholder="e.g. 5"
-                  />
-                  <p className={helperClass}>
-                    Must be a positive number.
-                  </p>
-                </div>
-
-                <div>
-                  <label className={labelClass}>Created At</label>
-                  <input
-                    type="datetime-local"
-                    value={createdAt}
-                    onChange={(e) => setCreatedAt(e.target.value)}
-                    required
-                    className={inputClass}
-                  />
-                  <p className={helperClass}>
-                    Default is the current date & time.
-                  </p>
-                </div>
-
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="
-                      ease-in-up shadow-btn hover:shadow-btn-hover
-                      bg-primary hover:bg-primary/90
-                      w-full
-                      rounded-2xl
-                      px-6 py-3.5
-                      text-sm font-semibold text-white
-                      transition duration-300
-                      disabled:opacity-60
-                      sm:w-auto sm:min-w-[200px]
-                      active:scale-[0.99]
-                    "
-                  >
-                    {loading ? "Saving..." : "Save Enrollment"}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => router.push("/enrollments")}
-                    className="
-                      w-full
-                      rounded-2xl
-                      border border-white/15
-                      bg-white/10
-                      px-6 py-3.5
-                      text-sm font-semibold
-                      text-black/80
-                      shadow-sm
-                      backdrop-blur-xl
-                      transition duration-300
-                      hover:bg-white/15
-                      dark:border-white/10
-                      dark:bg-white/5
-                      dark:text-white/80
-                      dark:hover:bg-white/10
-                      sm:w-auto sm:min-w-[160px]
-                      active:scale-[0.99]
-                    "
-                  >
-                    Cancel
-                  </button>
-                </div>
-
-                <p className="pt-1 text-center text-xs text-body-color dark:text-body-color-dark">
-                  Tip: After saving, you’ll be redirected to the enrollments list.
-                </p>
-              </form>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+      <style>{`
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </>
   );
 };
 
