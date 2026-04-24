@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { apiFetch, parseApiError } from "@/lib/api";
+import { useCourseStructure } from "@/hooks/useCourses";
 
 type SectionDto = {
   courseSectionId: number;
@@ -244,43 +244,8 @@ function SectionReveal({
 export default function CourseCourseraDetailsPage() {
   const params = useParams<{ id: string }>();
   const courseId = Number(params?.id);
-
-  const [loading, setLoading] = useState(true);
-  const [structure, setStructure] = useState<CourseStructureDto | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<TabKey>("about");
-
-  useEffect(() => {
-    if (!courseId || Number.isNaN(courseId)) {
-      setError("Invalid course id.");
-      setLoading(false);
-      return;
-    }
-
-    const load = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await apiFetch(`/courses/GetCourseStructure/${courseId}`, {
-          method: "GET",
-        });
-
-        if (!res.ok) {
-          throw await parseApiError(res);
-        }
-
-        const data = (await res.json()) as CourseStructureDto;
-        setStructure(data || null);
-      } catch (e: any) {
-        setError(e?.message || "Something went wrong");
-        setStructure(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    load();
-  }, [courseId]);
+  const { loading, structure, error } = useCourseStructure(courseId);
 
   const counts = useMemo(() => statCounts(structure), [structure]);
   const totalSeconds = useMemo(() => sumSeconds(structure), [structure]);

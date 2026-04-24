@@ -1,57 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import SingleEnrollment from "../../components/Enrollments/SingleEnrollment";
-import { useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api";
+import { useAllEnrollments } from "@/hooks/useEnrollments";
 
 export default function EnrollmentsPage() {
-  const router = useRouter();
-
-  const [enrollments, setEnrollments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const token = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("token");
-  }, []);
-
-  useEffect(() => {
-    if (!token) {
-      router.push("/signin");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    apiFetch(
-      "https://localhost:7145/api/enrollments/GetAllEnrollments",
-      {
-        method: "GET",
-      },
-      router
-    )
-      .then(async (res) => {
-        if (!res.ok) {
-          const t = await res.text().catch(() => "");
-          throw new Error(t || `Failed (${res.status})`);
-        }
-
-        const data = await res.json();
-
-        if (!Array.isArray(data)) {
-          console.log("GetAllEnrollments returned:", data);
-          throw new Error("API did not return an array");
-        }
-
-        setEnrollments(data);
-      })
-      .catch((e) => setError(e?.message || "Something went wrong"))
-      .finally(() => setLoading(false));
-  }, [token, router]);
+  const { enrollments, loading, error } = useAllEnrollments();
 
   return (
     <>
@@ -179,14 +133,12 @@ export default function EnrollmentsPage() {
 
               {!loading && !error && enrollments.length > 0 && (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                  {enrollments.map((enrollment: any, index: number) => {
+                  {enrollments.map((enrollment, index) => {
                     const key = String(
-                      enrollment?.id ??
-                        enrollment?.Id ??
-                        enrollment?.enrollmentId ??
-                        enrollment?.EnrollmentId ??
-                        `${enrollment?.studentId ?? "student"}-${
-                          enrollment?.courseId ?? "course"
+                      enrollment.id ||
+                        enrollment.enrollmentId ||
+                        `${enrollment.studentId || "student"}-${
+                          enrollment.courseId || "course"
                         }-${index}`
                     );
 

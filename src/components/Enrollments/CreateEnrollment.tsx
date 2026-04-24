@@ -1,81 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { apiFetch } from "@/lib/api";
+import { useCreateEnrollment } from "@/hooks/useEnrollments";
 
 const CreateEnrollmentPage = () => {
-  const router = useRouter();
-
-  const [studentId, setStudentId] = useState<number | "">("");
-  const [courseId, setCourseId] = useState<number | "">("");
-
-  // datetime-local default
-  const [createdAt, setCreatedAt] = useState<string>(
-    new Date().toISOString().slice(0, 16)
-  );
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-
-  const token = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("token");
-  }, []);
-
-  useEffect(() => {
-    if (!token) router.push("/signin");
-  }, [token, router]);
+  const { form, loading, feedback, updateField, submit, router } =
+    useCreateEnrollment();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const created = await submit();
 
-    if (!studentId || !courseId) {
-      setError("Please fill in all required fields.");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
-
-    const body = {
-      studentId: Number(studentId),
-      courseId: Number(courseId),
-      createdAt: new Date(createdAt).toISOString(),
-    };
-
-    try {
-      if (!token) {
-        router.push("/signin");
-        return;
-      }
-
-      const res = await apiFetch(
-        "https://localhost:7145/api/enrollments/CreateEnrollment",
-        {
-          method: "POST",
-          body: JSON.stringify(body),
-        },
-        router
-      );
-
-      if (!res.ok) {
-        const contentType = res.headers.get("content-type") || "";
-        const msg = contentType.includes("application/json")
-          ? await res.json().then((j) => j?.message || j?.error || JSON.stringify(j))
-          : await res.text().catch(() => "");
-
-        throw new Error(msg || `Request failed (${res.status})`);
-      }
-
-      setSuccess("Enrollment created successfully. Redirecting...");
+    if (created) {
       setTimeout(() => router.push("/enrollments"), 1000);
-    } catch (err: any) {
-      setError(err?.message || "Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -128,20 +64,20 @@ const CreateEnrollmentPage = () => {
                 </div>
 
                 {/* Alerts */}
-                {error && (
+                {feedback?.type === "error" && (
                   <div className="mb-6 flex items-center gap-3 rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-4 text-sm font-medium text-red-600 dark:text-red-400 opacity-0 animate-[fadeInUp_.6s_ease-out_forwards]">
                     <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                    {error}
+                    {feedback.text}
                   </div>
                 )}
 
-                {success && (
+                {feedback?.type === "success" && (
                   <div className="mb-6 flex items-center gap-3 rounded-2xl border border-green-500/30 bg-green-500/10 px-5 py-4 text-sm font-medium text-green-700 dark:text-green-400 opacity-0 animate-[fadeInUp_.6s_ease-out_forwards]">
                     <svg className="h-5 w-5 animate-spin text-green-600 dark:text-green-400" viewBox="0 0 24 24" fill="none">
                       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" strokeOpacity="0.3" />
                       <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
-                    {success}
+                    {feedback.text}
                   </div>
                 )}
 
@@ -155,8 +91,13 @@ const CreateEnrollmentPage = () => {
                       <input
                         type="number"
                         min={1}
-                        value={studentId}
-                        onChange={(e) => setStudentId(e.target.value === "" ? "" : Number(e.target.value))}
+                        value={form.studentId}
+                        onChange={(e) =>
+                          updateField(
+                            "studentId",
+                            e.target.value === "" ? "" : Number(e.target.value)
+                          )
+                        }
                         required
                         className={inputClass}
                         placeholder="e.g. 1042"
@@ -170,8 +111,13 @@ const CreateEnrollmentPage = () => {
                       <input
                         type="number"
                         min={1}
-                        value={courseId}
-                        onChange={(e) => setCourseId(e.target.value === "" ? "" : Number(e.target.value))}
+                        value={form.courseId}
+                        onChange={(e) =>
+                          updateField(
+                            "courseId",
+                            e.target.value === "" ? "" : Number(e.target.value)
+                          )
+                        }
                         required
                         className={inputClass}
                         placeholder="e.g. 5"
@@ -185,8 +131,8 @@ const CreateEnrollmentPage = () => {
                     <label className={labelClass}>Enrollment Date & Time</label>
                     <input
                       type="datetime-local"
-                      value={createdAt}
-                      onChange={(e) => setCreatedAt(e.target.value)}
+                      value={form.createdAt}
+                      onChange={(e) => updateField("createdAt", e.target.value)}
                       required
                       className={inputClass}
                     />
@@ -200,7 +146,7 @@ const CreateEnrollmentPage = () => {
                     <button
                       type="button"
                       onClick={() => router.push("/enrollments")}
-                      disabled={loading || !!success}
+                      disabled={loading || feedback?.type === "success"}
                       className="
                         flex w-full items-center justify-center rounded-xl border border-black/10 bg-white
                         px-6 py-4 text-sm font-bold text-black shadow-sm
@@ -214,7 +160,7 @@ const CreateEnrollmentPage = () => {
                     
                     <button
                       type="submit"
-                      disabled={loading || !!success}
+                      disabled={loading || feedback?.type === "success"}
                       className="
                         flex w-full items-center justify-center gap-2 rounded-xl bg-primary
                         px-6 py-4 text-sm font-bold text-white shadow-lg shadow-primary/30
@@ -230,7 +176,7 @@ const CreateEnrollmentPage = () => {
                           </svg>
                           Processing...
                         </>
-                      ) : success ? (
+                      ) : feedback?.type === "success" ? (
                         <>
                           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                           Success

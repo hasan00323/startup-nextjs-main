@@ -43,12 +43,21 @@ export type ModuleQuizDto = {
 };
 
 export type CourseListItem = {
+  id?: number;
+  Id?: number;
+  CourseId?: number;
   courseId: number;
+  Title?: string;
   title: string;
+  Description?: string | null;
   description?: string | null;
+  Price?: number;
   price: number;
+  StartDate?: string;
   startDate: string;
+  EndDate?: string;
   endDate: string;
+  CategoryName?: string | null;
   categoryName?: string | null;
 };
 

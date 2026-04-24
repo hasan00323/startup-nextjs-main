@@ -1,150 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { apiFetch, parseApiError } from "@/lib/api";
-
-type CourseForm = {
-  title: string;
-  description: string;
-  price: string;
-  startDate: string;
-  endDate: string;
-  categoryId: string;
-};
-
-const CATEGORIES: { id: number; name: string }[] = [
-  { id: 1, name: "IT" },
-  { id: 2, name: "HR" },
-  { id: 3, name: "Sales" },
-  { id: 4, name: "Marketing" },
-];
-
-const toDatetimeLocal = (iso?: string) => {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
-    d.getHours()
-  )}:${pad(d.getMinutes())}`;
-};
-
-const toIso = (dtLocal: string) => {
-  if (!dtLocal) return null;
-  const d = new Date(dtLocal);
-  if (Number.isNaN(d.getTime())) return null;
-  return d.toISOString();
-};
+import { useEditCourse } from "@/hooks/useCourses";
+import { COURSE_CATEGORIES } from "@/services/courseService";
 
 export default function EditCoursePage() {
   const params = useParams();
   const id = (params?.id as string) || "";
   const router = useRouter();
-
-  const token = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("token");
-  }, []);
-
-  const [form, setForm] = useState<CourseForm | null>(null);
-  const [pageLoading, setPageLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
- useEffect(() => {
-  if (!id) return;
-
-  if (!token) {
-    router.push("/signin");
-    return;
-  }
-
-  setPageLoading(true);
-  setError(null);
-
-  apiFetch(
-    `https://localhost:7145/api/courses/GetCourse/${id}`,
-    {
-      method: "GET",
-    },
-    router
-  )
-    .then(async (res) => {
-      if (!res.ok) {
-        const t = await res.text().catch(() => "");
-        throw new Error(t || `Failed to load course (${res.status})`);
-      }
-      return res.json();
-    })
-    .then((course) => {
-      const incomingCategoryId = String(
-        course?.categoryId ?? course?.CategoryId ?? "0"
-      );
-
-      const isValid = CATEGORIES.some(
-        (c) => String(c.id) === incomingCategoryId
-      );
-
-      setForm({
-        title: course?.title ?? course?.Title ?? "",
-        description: course?.description ?? course?.Description ?? "",
-        price: String(course?.price ?? course?.Price ?? "0"),
-        startDate: toDatetimeLocal(
-          course?.startDate ?? course?.StartDate
-        ),
-        endDate: toDatetimeLocal(
-          course?.endDate ?? course?.EndDate
-        ),
-        categoryId: isValid ? incomingCategoryId : "0",
-      });
-    })
-    .catch((e) => setError(e?.message || "Failed to load course"))
-    .finally(() => setPageLoading(false));
-}, [id, token, router]);
+  const { form, pageLoading, saving, error, updateField, submit } = useEditCourse(id);
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form) return;
+    const saved = await submit();
 
-    try {
-      setSaving(true);
-      setError(null);
-
-      const categoryIdInt = parseInt(form.categoryId, 10);
-      if (!categoryIdInt || categoryIdInt <= 0) {
-        throw new Error("Please select a category.");
-      }
-
-      const payload = {
-        Title: form.title,
-        Description: form.description,
-        Price: Number(form.price) || 0,
-        StartDate: toIso(form.startDate),
-        EndDate: toIso(form.endDate),
-        CategoryId: categoryIdInt,
-      };
-
-      console.log("UPDATE PAYLOAD (SENT):", payload);
-
-      const res = await apiFetch(`/courses/updateCourse/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      }, router);
-
-      if (!res.ok) {
-        throw await parseApiError(res);
-      }
-
+    if (saved) {
       alert("Course updated successfully");
       router.push(`/courses/details/${id}`);
-    } catch (err: any) {
-      setError(err?.message || "Something went wrong");
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -247,7 +119,7 @@ export default function EditCoursePage() {
             <input
               type="text"
               value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              onChange={(e) => updateField("title", e.target.value)}
               required
               className="
                 w-full bg-transparent text-sm text-black outline-none
@@ -267,7 +139,7 @@ export default function EditCoursePage() {
             <textarea
               rows={4}
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) => updateField("description", e.target.value)}
               required
               className="
                 w-full resize-none bg-transparent text-sm text-black outline-none
@@ -299,7 +171,7 @@ export default function EditCoursePage() {
               min={0}
               step="0.01"
               value={form.price}
-              onChange={(e) => setForm({ ...form, price: e.target.value })}
+              onChange={(e) => updateField("price", e.target.value)}
               required
               className="
                 w-full bg-transparent text-sm text-black outline-none
@@ -330,7 +202,7 @@ export default function EditCoursePage() {
               <input
                 type="datetime-local"
                 value={form.startDate}
-                onChange={(e) => setForm({ ...form, startDate: e.target.value })}
+                onChange={(e) => updateField("startDate", e.target.value)}
                 required
                 className="
                   w-full bg-transparent text-sm text-black outline-none
@@ -360,7 +232,7 @@ export default function EditCoursePage() {
               <input
                 type="datetime-local"
                 value={form.endDate}
-                onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+                onChange={(e) => updateField("endDate", e.target.value)}
                 required
                 className="
                   w-full bg-transparent text-sm text-black outline-none
@@ -389,7 +261,7 @@ export default function EditCoursePage() {
 
             <select
               value={form.categoryId}
-              onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+              onChange={(e) => updateField("categoryId", e.target.value)}
               required
               className="
                 w-full bg-transparent text-sm text-black outline-none
@@ -399,7 +271,7 @@ export default function EditCoursePage() {
               <option value="0" disabled>
                 Select category...
               </option>
-              {CATEGORIES.map((c) => (
+              {COURSE_CATEGORIES.map((c) => (
                 <option key={c.id} value={String(c.id)}>
                   {c.name}
                 </option>

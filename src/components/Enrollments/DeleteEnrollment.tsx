@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api";
+import { useDeleteEnrollment } from "@/hooks/useEnrollments";
 
 type EnrollmentMeta = {
   studentName?: string;
@@ -13,25 +13,14 @@ const DeleteEnrollmentPage = () => {
   const params = useParams();
   const id = (params?.id as string) ?? "";
   const router = useRouter();
-
-  const token = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("token");
-  }, []);
+  const { submitting, error, remove } = useDeleteEnrollment(id);
 
   const [open, setOpen] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [meta, setMeta] = useState<EnrollmentMeta>({});
 
   useEffect(() => {
     if (!id) {
       router.push("/enrollments");
-      return;
-    }
-
-    if (!token) {
-      router.push("/signin");
       return;
     }
 
@@ -41,7 +30,7 @@ const DeleteEnrollmentPage = () => {
     } catch {
       // Ignore parse errors
     }
-  }, [id, token, router]);
+  }, [id, router]);
 
   const close = () => {
     setOpen(false);
@@ -49,35 +38,10 @@ const DeleteEnrollmentPage = () => {
   };
 
   const handleDelete = async () => {
-    if (!token) {
-      router.push("/signin");
-      return;
-    }
-
-    setSubmitting(true);
-    setError(null);
-
-    try {
-      const res = await apiFetch(
-        `https://localhost:7145/api/enrollments/DeleteEnrollment?id=${encodeURIComponent(
-          id
-        )}`,
-        {
-          method: "DELETE",
-        },
-        router
-      );
-
-      if (!res.ok) {
-        const t = await res.text().catch(() => "");
-        throw new Error(t || `Failed to delete enrollment (${res.status})`);
-      }
-
+    const deleted = await remove();
+    if (deleted) {
       localStorage.removeItem("deleteEnrollmentMeta");
       router.push("/enrollments");
-    } catch (e: any) {
-      setError(e?.message || "Failed to delete enrollment");
-      setSubmitting(false);
     }
   };
 

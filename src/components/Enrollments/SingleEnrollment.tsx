@@ -1,19 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import type { Enrollment } from "@/models/enrollment";
 
-const SingleEnrollment = ({ enrollment }: { enrollment: any }) => {
-  const enrollmentId =
-    enrollment?.enrollmentId ??
-    enrollment?.EnrollmentId ??
-    enrollment?.id ??
-    enrollment?.Id;
+const SingleEnrollment = ({ enrollment }: { enrollment: Enrollment }) => {
+  const enrollmentId = enrollment.enrollmentId || enrollment.id;
 
-  const studentId = enrollment?.studentId ?? enrollment?.StudentId;
-  const studentName = enrollment?.studentName ?? enrollment?.StudentName;
+  const studentId = enrollment.studentId;
+  const studentName = enrollment.studentName;
 
-  const courseId = enrollment?.courseId ?? enrollment?.CourseId;
-  const courseTitle = enrollment?.courseTitle ?? enrollment?.CourseTitle;
+  const courseId = enrollment.courseId;
+  const courseTitle = enrollment.courseTitle;
 
   // وظيفة لحفظ البيانات مؤقتاً قبل الانتقال لصفحة الحذف
   const handlePrepareDelete = () => {

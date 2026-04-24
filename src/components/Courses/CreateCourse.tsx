@@ -1,87 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api";
-
-const isoLocalNow = () => new Date().toISOString().slice(0, 16);
+import { useCreateCourse } from "@/hooks/useCourses";
 
 const CreateCoursePage = () => {
-  const router = useRouter();
-
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-
-  const [price, setPrice] = useState<number>(0);
-
-  const [startDate, setStartDate] = useState<string>(isoLocalNow());
-  const [endDate, setEndDate] = useState<string>(isoLocalNow());
-
-  const [categoryId, setCategoryId] = useState<number>(1);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const token = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("token");
-  }, []);
+  const { form, loading, error, updateField, submit, router } = useCreateCourse();
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
+  const created = await submit();
 
-  setError(null);
-
-  if (!token) {
-    router.push("/signin");
-    return;
-  }
-
-  const s = new Date(startDate);
-  const en = new Date(endDate);
-  if (Number.isNaN(s.getTime()) || Number.isNaN(en.getTime())) {
-    setError("Please select valid start/end dates.");
-    return;
-  }
-  if (en <= s) {
-    setError("End date must be after start date.");
-    return;
-  }
-
-  setLoading(true);
-
-  const body = {
-    title,
-    description,
-    price,
-    startDate: s.toISOString(),
-    endDate: en.toISOString(),
-    categoryId,
-  };
-
-  try {
-    const res = await apiFetch(
-      "https://localhost:7145/api/courses/CreateCourse",
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-      },
-      router
-    );
-
-    if (!res.ok) {
-      const contentType = res.headers.get("content-type") || "";
-      const errorText = contentType.includes("application/json")
-        ? JSON.stringify(await res.json())
-        : await res.text().catch(() => "");
-      throw new Error(errorText || `Request failed (${res.status})`);
-    }
-
+  if (created) {
     router.push("/courses");
-  } catch (err: any) {
-    setError(err?.message || "Something went wrong");
-  } finally {
-    setLoading(false);
   }
 };
 
@@ -167,8 +96,8 @@ const CreateCoursePage = () => {
                     <input
                       type="text"
                       placeholder="e.g. Front-End Mastery"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
+                      value={form.title}
+                      onChange={(e) => updateField("title", e.target.value)}
                       required
                       className="
                         w-full bg-transparent text-sm text-black outline-none
@@ -200,8 +129,8 @@ const CreateCoursePage = () => {
                     <textarea
                       rows={4}
                       placeholder="Write a short description about the course..."
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
+                      value={form.description}
+                      onChange={(e) => updateField("description", e.target.value)}
                       required
                       className="
                         w-full resize-none bg-transparent text-sm text-black outline-none
@@ -251,8 +180,8 @@ const CreateCoursePage = () => {
                         type="number"
                         min={0}
                         step="0.01"
-                        value={price}
-                        onChange={(e) => setPrice(Number(e.target.value))}
+                        value={form.price}
+                        onChange={(e) => updateField("price", Number(e.target.value))}
                         required
                         className="
                           w-full bg-transparent text-sm text-black outline-none
@@ -301,8 +230,8 @@ const CreateCoursePage = () => {
                       <input
                         type="number"
                         min={1}
-                        value={categoryId}
-                        onChange={(e) => setCategoryId(Number(e.target.value))}
+                        value={form.categoryId}
+                        onChange={(e) => updateField("categoryId", Number(e.target.value))}
                         required
                         className="
                           w-full bg-transparent text-sm text-black outline-none
@@ -350,8 +279,8 @@ const CreateCoursePage = () => {
 
                       <input
                         type="datetime-local"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
+                        value={form.startDate}
+                        onChange={(e) => updateField("startDate", e.target.value)}
                         required
                         className="
                           w-full bg-transparent text-sm text-black outline-none
@@ -397,8 +326,8 @@ const CreateCoursePage = () => {
 
                       <input
                         type="datetime-local"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
+                        value={form.endDate}
+                        onChange={(e) => updateField("endDate", e.target.value)}
                         required
                         className="
                           w-full bg-transparent text-sm text-black outline-none

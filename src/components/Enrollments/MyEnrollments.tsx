@@ -1,10 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api";
-
-type Enrollment = any;
+import { useMyEnrollments } from "@/hooks/useEnrollments";
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
@@ -89,74 +85,7 @@ function Alert({
 }
 
 const MyEnrollmentsPage = () => {
-  const router = useRouter();
-
-  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const token =
-      typeof window === "undefined" ? null : localStorage.getItem("token");
-
-    if (!token) {
-      setError("You must sign in first.");
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    apiFetch(
-      "https://localhost:7145/api/courses/MyCourses",
-      {
-        method: "GET",
-      },
-      router
-    )
-      .then(async (res) => {
-        if (res.status === 404) {
-          setEnrollments([]);
-          return;
-        }
-
-        if (!res.ok) {
-          const t = await res.text().catch(() => "");
-          throw new Error(t || `Failed (${res.status})`);
-        }
-
-        const contentType = res.headers.get("content-type") || "";
-
-        if (!contentType.includes("application/json")) {
-          const t = await res.text().catch(() => "");
-          const normalized = (t || "").toLowerCase();
-
-          if (
-            normalized.includes("no enroll") ||
-            normalized.includes("no courses") ||
-            normalized.includes("not found")
-          ) {
-            setEnrollments([]);
-            return;
-          }
-
-          throw new Error(t || "Unexpected response");
-        }
-
-        const data = await res.json();
-        const arr = Array.isArray(data) ? data : data?.items ?? [];
-
-        if (!Array.isArray(arr)) {
-          setEnrollments([]);
-          return;
-        }
-
-        setEnrollments(arr);
-      })
-      .catch((e) => setError(e?.message || "Failed to load"))
-      .finally(() => setLoading(false));
-  }, [router]);
+  const { enrollments, loading, error, router } = useMyEnrollments();
 
   if (loading) {
     return (
@@ -265,14 +194,10 @@ const MyEnrollmentsPage = () => {
           <Alert type="info">You haven't enrolled in any courses yet. Start your journey today!</Alert>
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {enrollments.map((en: any, index: number) => {
-              const courseId =
-                en?.courseId ?? en?.CourseId ?? en?.id ?? en?.Id ?? "";
+            {enrollments.map((en, index) => {
+              const courseId = en.courseId || en.id || "";
               const key = String(courseId || index);
-              const course = en?.course ?? en?.Course ?? en;
-              const canView = Boolean(
-                course?.CourseId ?? course?.courseId ?? courseId
-              );
+              const canView = Boolean(courseId);
 
               return (
                 <div
@@ -295,30 +220,23 @@ const MyEnrollmentsPage = () => {
                 >
                   <div className="mb-4 flex items-center justify-between">
                     <span className="inline-flex items-center rounded-lg bg-black/5 px-2.5 py-1 text-xs font-bold text-black/70 dark:bg-white/10 dark:text-white/70">
-                      {course?.categoryName ?? course?.CategoryName ?? "General"}
+                      {en.categoryName || "General"}
                     </span>
                     <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" title="Active Enrollment"></span>
                   </div>
 
                   <h3 className="mb-2 text-xl font-extrabold text-black transition-colors group-hover:text-primary dark:text-white line-clamp-2">
-                    {course?.title ?? course?.Title ?? "Untitled Course"}
+                    {en.courseTitle || "Untitled Course"}
                   </h3>
 
                   <p className="text-body-color dark:text-body-color-dark mb-6 flex-1 text-sm line-clamp-3">
-                    {course?.description ??
-                      course?.Description ??
-                      "No description provided for this course."}
+                    {en.description || "No description provided for this course."}
                   </p>
 
                   <div className="mt-auto border-t border-black/5 pt-5 dark:border-white/10">
                     <button
                       onClick={() => {
-                        const id =
-                          course?.CourseId ??
-                          course?.courseId ??
-                          courseId ??
-                          "";
-                        router.push(`/courses/details/${id}`);
+                        router.push(`/courses/details/${courseId}`);
                       }}
                       className="
                         group/btn
