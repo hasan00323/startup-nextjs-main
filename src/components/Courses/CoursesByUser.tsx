@@ -1,76 +1,63 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import SingleCourseSearchCard from "@/components/Courses/SingleCourseSearch";
-import { apiFetch } from "@/lib/api";
+import { getErrorMessage } from "@/lib/errors";
+import { requestJson } from "@/lib/api";
+import SingleCourse from "@/components/Courses/SingleCourse";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 
-const CoursesByUserPage = () => {
+function normalizeCourseList(data: unknown) {
+  if (Array.isArray(data)) return data;
+  if (data && typeof data === "object" && Array.isArray((data as { items?: unknown }).items)) {
+    return (data as { items: unknown[] }).items;
+  }
+  return [];
+}
+
+export default function CoursesByUserPage() {
   const params = useParams();
-  const userId = params?.userId as string;
-
   const router = useRouter();
+  const { isAuthenticated } = useRequireAuth();
+  const userId = String(params?.id ?? "");
 
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const token = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("token");
-  }, []);
+  useEffect(() => {
+    if (!isAuthenticated || !userId) return;
 
- useEffect(() => {
-  if (!userId) return;
+    let cancelled = false;
 
-  if (!token) {
-    router.push("/signin");
-    return;
-  }
-
-  let cancelled = false;
-
-  const loadCourses = async () => {
-    try {
+    const loadCourses = async () => {
       setLoading(true);
       setError(null);
 
-      const url = `https://localhost:7145/api/courses/GetCourseByUser?userId=${userId}`;
+      try {
+        const data = await requestJson<unknown>(
+          `/courses/GetCourseByUser?userId=${encodeURIComponent(userId)}`,
+          { method: "GET" },
+          router
+        );
 
-      const res = await apiFetch(
-        url,
-        { method: "GET" },
-        router
-      );
-
-      if (!res.ok) {
-        const t = await res.text().catch(() => "");
-        throw new Error(t || `Failed (${res.status})`);
+        if (!cancelled) setCourses(normalizeCourseList(data));
+      } catch (error) {
+        if (!cancelled) setError(getErrorMessage(error, "Failed to load courses."));
+      } finally {
+        if (!cancelled) setLoading(false);
       }
+    };
 
-      const data = await res.json();
-      const arr = Array.isArray(data) ? data : data?.items ?? [];
-      if (!Array.isArray(arr)) {
-        throw new Error("API did not return an array");
-      }
+    void loadCourses();
 
-      if (!cancelled) setCourses(arr);
-    } catch (e: any) {
-      if (!cancelled) setError(e?.message || "Failed to load");
-    } finally {
-      if (!cancelled) setLoading(false);
-    }
-  };
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, router, userId]);
 
-  loadCourses();
-
-  return () => {
-    cancelled = true;
-  };
-}, [userId, token, router]);
-
-  if (loading) return <p className="text-center py-20">Loading...</p>;
-  if (error) return <p className="text-center py-20 text-red-500">{error}</p>;
+  if (loading) return <p className="py-20 text-center">Loading...</p>;
+  if (error) return <p className="py-20 text-center text-red-500">{error}</p>;
 
   return (
     <div className="container py-20">
@@ -84,28 +71,28 @@ const CoursesByUserPage = () => {
 
         <button
           onClick={() => router.push("/courses")}
-          className="border-stroke text-dark hover:bg-gray-light dark:text-white dark:hover:bg-gray-dark rounded-xs border bg-white px-6 py-3 text-sm font-medium duration-300 dark:border-white/10 dark:bg-transparent"
+          className="rounded-xl border border-stroke bg-white px-6 py-3 text-sm font-medium text-dark duration-300 hover:bg-gray-light dark:border-white/10 dark:bg-transparent dark:text-white dark:hover:bg-gray-dark"
         >
           Back
         </button>
       </div>
 
       {courses.length === 0 ? (
-        <div className="rounded-xs border border-stroke bg-white p-8 text-center text-body-color dark:border-white/10 dark:bg-dark dark:text-body-color-dark">
+        <div className="rounded-xl border border-stroke bg-white p-8 text-center text-body-color dark:border-white/10 dark:bg-dark dark:text-body-color-dark">
           No courses found.
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {courses.map((course: any, index: number) => (
-            <SingleCourseSearchCard
-              key={String(course?.id ?? course?.courseId ?? index)}
+          {courses.map((course, index) => (
+            <SingleCourse
+              key={String(course?.id ?? course?.courseId ?? course?.CourseId ?? index)}
               course={course}
+              isAdmin={false}
+              price={Number(course?.price ?? course?.Price ?? 0)}
             />
           ))}
         </div>
       )}
     </div>
   );
-};
-
-export default CoursesByUserPage;
+}

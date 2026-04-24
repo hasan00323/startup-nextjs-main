@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import GlassCard from "./shared/GlassCard";
 import Field from "./shared/Field";
 import MiniButton from "./shared/MiniButton";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, parseApiError } from "@/lib/api";
 import type { CategoryItem } from "./../types";
 
 const toLocalInputValue = (iso: string) => {
@@ -100,8 +100,7 @@ export default function CreateCourseWizard() {
       );
 
       if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        throw new Error(txt || `Request failed (${res.status})`);
+        throw await parseApiError(res);
       }
 
       router.push("/admin/courses/builder-pick");
@@ -285,16 +284,15 @@ export default function CreateCourseWizard() {
                               // امسح الحقل بالكامل بدل ما تبعث null
                               if (dto.parentCourseId === null) delete dto.parentCourseId;
 
-                              const res = await fetch("https://localhost:7145/api/courses/CreateCourse", {
+                              const res = await apiFetch("/courses/CreateCourse", {
                                 method: "POST",
                                 headers: {
                                   "Content-Type": "application/json",
-                                  ...(token ? { Authorization: `Bearer ${token}` } : {}),
                                 },
                                 body: JSON.stringify(dto),
-                              });
+                              }, router);
 
-                              if (!res.ok) throw new Error(await res.text());
+                              if (!res.ok) throw await parseApiError(res);
 
                               // ✅ لازم ترجع ID من API عشان نروح للـ builder
                               const data = await res.json().catch(() => null);

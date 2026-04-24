@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { memo } from "react";
 
-const SingleCourse = ({ course, isAdmin }: { course: any; isAdmin: boolean }) => {
+const SingleCourse = memo(function SingleCourse({ course, isAdmin, price }: { course: any; isAdmin: boolean; price: number }) {
   // استخدام Optional Chaining لحماية الكود من أي خطأ إذا كانت البيانات ناقصة
   const courseId = course?.id ?? course?.courseId ?? course?.CourseId;
   const imageSrc = course?.imageUrl || "/images/blog/blog-01.jpg";
@@ -14,13 +15,14 @@ const SingleCourse = ({ course, isAdmin }: { course: any; isAdmin: boolean }) =>
   return (
     <>
       <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-xl dark:border-white/10 dark:bg-[#0B1220]/60 dark:backdrop-blur-xl opacity-0 animate-[courseCardIn_.55s_ease-out_forwards]">
-        
+
         {/* ================= IMAGE SECTION ================= */}
         <Link href={isAdmin ? editHref : detailsHref} className="relative block h-52 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
           <Image
             src={imageSrc}
             alt={course?.title || "Course Image"}
             fill
+            sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           />
           {/* تأثير ظلال متدرجة يظهر عند تمرير الماوس */}
@@ -29,7 +31,7 @@ const SingleCourse = ({ course, isAdmin }: { course: any; isAdmin: boolean }) =>
 
         {/* ================= CONTENT SECTION ================= */}
         <div className="flex flex-1 flex-col p-6">
-          
+
           {/* Badge */}
           <div className="mb-3 flex items-center opacity-0 animate-[textIn_.55s_ease-out_forwards] [animation-delay:40ms]">
             <span className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
@@ -40,8 +42,12 @@ const SingleCourse = ({ course, isAdmin }: { course: any; isAdmin: boolean }) =>
           {/* Title */}
           <h3 className="mb-3 text-xl font-bold text-gray-900 transition-colors duration-200 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400 opacity-0 animate-[textIn_.55s_ease-out_forwards] [animation-delay:80ms]">
             <Link href={isAdmin ? editHref : detailsHref} className="line-clamp-2">
-              {course?.title || "Untitled Course"}
+              <div className="flex items-center justify-between w-full">
+                <h3 className="font-bold">{course?.title || "Untitled Course"}</h3>
+                <span className="text-blue-600">{price}$</span>
+              </div>
             </Link>
+
           </h3>
 
           {/* Description (flex-1 pushes the button to the bottom) */}
@@ -57,7 +63,7 @@ const SingleCourse = ({ course, isAdmin }: { course: any; isAdmin: boolean }) =>
               className="group/btn inline-flex items-center gap-2 text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
               {isAdmin ? "Edit this course" : "View details"}
-              
+
               <svg
                 width="16"
                 height="16"
@@ -71,7 +77,7 @@ const SingleCourse = ({ course, isAdmin }: { course: any; isAdmin: boolean }) =>
               </svg>
             </Link>
           </div>
-          
+
         </div>
       </div>
 
@@ -87,6 +93,6 @@ const SingleCourse = ({ course, isAdmin }: { course: any; isAdmin: boolean }) =>
       `}</style>
     </>
   );
-};
+});
 
 export default SingleCourse;

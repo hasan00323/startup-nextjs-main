@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { apiFetch, parseApiError } from "@/lib/api";
 
 type SectionDto = {
   courseSectionId: number;
@@ -260,13 +261,12 @@ export default function CourseCourseraDetailsPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`https://localhost:7145/api/courses/GetCourseStructure/${courseId}`, {
+        const res = await apiFetch(`/courses/GetCourseStructure/${courseId}`, {
           method: "GET",
         });
 
         if (!res.ok) {
-          const txt = await res.text().catch(() => "");
-          throw new Error(txt || `Request failed (${res.status})`);
+          throw await parseApiError(res);
         }
 
         const data = (await res.json()) as CourseStructureDto;

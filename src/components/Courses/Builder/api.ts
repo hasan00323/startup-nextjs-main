@@ -16,28 +16,21 @@ import type {
   CreateQuizOptionDto,
   UpdateQuizOptionDto,
 } from "./../types";
+import { apiFetch, parseApiError } from "@/lib/api";
 
-const API = "https://localhost:7145/api/courses";
-
-function getToken() {
-  return localStorage.getItem("token") || localStorage.getItem("Token") || "";
-}
+const API = "/courses";
 
 async function req<T>(url: string, init?: RequestInit): Promise<T> {
-  const token = getToken();
-
-  const res = await fetch(url, {
+  const res = await apiFetch(url, {
     ...init,
     headers: {
       "Content-Type": "application/json",
       ...(init?.headers || {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
 
   if (!res.ok) {
-    const txt = await res.text().catch(() => "");
-    throw new Error(txt || `Request failed (${res.status})`);
+    throw await parseApiError(res);
   }
 
   const ct = res.headers.get("content-type") || "";

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, parseApiError } from "@/lib/api";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
 
@@ -176,30 +176,22 @@ const UpdateAdminProfilePage = () => {
       setError(null);
       setSuccess(null);
 
-      const tokenNow = localStorage.getItem("token");
-      if (!tokenNow) {
-        router.push("/signin");
-        return;
-      }
-
       const payload = {
         FullName: form.fullName,
         Email: form.email,
         PhoneNumber: form.phoneNumber,
       };
 
-      const res = await fetch("https://localhost:7145/api/Users/UpdateAdminProfile", {
+      const res = await apiFetch("/Users/UpdateAdminProfile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenNow}`,
         },
         body: JSON.stringify(payload),
-      });
+      }, router);
 
       if (!res.ok) {
-        const t = await res.text().catch(() => "");
-        throw new Error(t || `Update failed (${res.status})`);
+        throw await parseApiError(res);
       }
 
       setSuccess("Profile updated successfully.");

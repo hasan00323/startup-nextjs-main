@@ -13,17 +13,24 @@ export default function ScrollToTop() {
   };
 
   useEffect(() => {
+    let ticking = false;
+
     const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
+      const nextVisible = window.pageYOffset > 300;
+      setIsVisible((current) => (current === nextVisible ? current : nextVisible));
+      ticking = false;
     };
 
-    window.addEventListener("scroll", toggleVisibility);
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(toggleVisibility);
+    };
 
-    return () => window.removeEventListener("scroll", toggleVisibility);
+    toggleVisibility();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (

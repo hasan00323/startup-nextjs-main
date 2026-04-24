@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, parseApiError } from "@/lib/api";
 
 type CourseForm = {
   title: string;
@@ -111,12 +111,6 @@ export default function EditCoursePage() {
       setSaving(true);
       setError(null);
 
-      const tokenNow = localStorage.getItem("token");
-      if (!tokenNow) {
-        router.push("/signin");
-        return;
-      }
-
       const categoryIdInt = parseInt(form.categoryId, 10);
       if (!categoryIdInt || categoryIdInt <= 0) {
         throw new Error("Please select a category.");
@@ -133,18 +127,16 @@ export default function EditCoursePage() {
 
       console.log("UPDATE PAYLOAD (SENT):", payload);
 
-      const res = await fetch(`https://localhost:7145/api/courses/updateCourse/${id}`, {
+      const res = await apiFetch(`/courses/updateCourse/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenNow}`,
         },
         body: JSON.stringify(payload),
-      });
+      }, router);
 
       if (!res.ok) {
-        const t = await res.text().catch(() => "");
-        throw new Error(t || `Update failed (${res.status})`);
+        throw await parseApiError(res);
       }
 
       alert("Course updated successfully");

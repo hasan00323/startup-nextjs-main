@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SingleCourse from "@/components/Courses/SingleCourse";
+import { useCourses } from "@/hooks/useCourses";
 
 export default function CoursesPage() {
-  const [courses, setCourses] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { courses, loading, error } = useCourses();
   const [isAdmin, setIsAdmin] = useState(false);
   const router = useRouter();
 
@@ -15,14 +15,8 @@ export default function CoursesPage() {
     setIsAdmin(Number(roleId) === 1);
   }, []);
 
-  useEffect(() => {
-    fetch("https://localhost:7145/api/courses/GetAllCourses")
-      .then((res) => res.json())
-      .then((data) => setCourses(Array.isArray(data) ? data : []))
-      .finally(() => setLoading(false));
-  }, []);
-
   if (loading) return <div className="container py-20 text-center">Loading...</div>;
+  if (error) return <div className="container py-20 text-center text-red-500">{error}</div>;
 
   return (
     <div className="container py-20" style={{ marginTop: "20px" }}>
@@ -44,7 +38,8 @@ export default function CoursesPage() {
         {courses.map((course, index) => {
           const id = course?.id ?? course?.courseId ?? course?.CourseId;
           const key = id != null ? `course-${id}` : `course-index-${index}`;
-          return <SingleCourse key={key} course={course} isAdmin={isAdmin} />;
+          const price = course?.price ?? course?.Price ?? 0;
+          return <SingleCourse key={key} course={course} isAdmin={isAdmin} price={price} />;
         })}
       </div>
     </div>

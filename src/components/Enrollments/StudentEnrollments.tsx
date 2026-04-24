@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, parseApiError } from "@/lib/api";
 
 const StudentEnrollmentsPage = () => {
   const params = useParams();
@@ -110,14 +110,12 @@ const StudentEnrollmentsPage = () => {
     try {
       const url = `https://localhost:7145/api/enrollments/DeleteEnrollment?studentId=${studentId}&courseId=${selected.courseId}`;
 
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      }, router);
 
       if (!res.ok) {
-        const t = await res.text().catch(() => "");
-        throw new Error(t || `Failed to delete (${res.status})`);
+        throw await parseApiError(res);
       }
 
       closeDelete();
