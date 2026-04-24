@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import ThemeToggler from "./ThemeToggler";
 import { getMenuData } from "./menuData";
 import { stopRefreshTokenTimer } from "@/lib/api";
@@ -15,11 +15,34 @@ const Header = () => {
   const { token, roleId, displayName, mounted } = useAuthLoader(pathname);
   const sticky = useSticky();
   const { navbarOpen, userMenuOpen, openIndex, toggleNavbar, handleSubmenu, closeAll, setUserMenuOpen } = useNavbarState();
+  const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const isAuthed = !!token;
   const roleName = roleId === 1 ? "Admin" : roleId === 2 ? "Student" : "User";
   const profileHref = roleName === "Admin" ? "/admin/profile" : "/students/profile";
   const menuData = useMemo(() => getMenuData(roleId, isAuthed), [roleId, isAuthed]);
   const userInitials = displayName ? displayName.charAt(0).toUpperCase() : "U";
+
+  useEffect(() => {
+    if (!userMenuOpen) return;
+
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!accountMenuRef.current?.contains(event.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setUserMenuOpen(false);
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [setUserMenuOpen, userMenuOpen]);
 
   const logout = async () => {
     try {
@@ -72,7 +95,7 @@ const Header = () => {
 
                 <nav
                   id="navbarCollapse"
-                  className={`navbar border-body-color/50 dark:border-body-color/20 dark:bg-dark absolute right-0 z-30 w-[270px] rounded-xl border-[.5px] bg-white/90 px-6 py-4 backdrop-blur-xl duration-300 lg:visible lg:static lg:w-auto lg:border-none lg:!bg-transparent lg:p-0 lg:opacity-100 transition-[opacity,top,transform] ${
+                  className={`navbar border-body-color/50 dark:border-body-color/20 absolute right-0 z-30 w-[270px] rounded-xl border-[.5px] bg-white/90 px-6 py-4 backdrop-blur-xl duration-300 dark:bg-[#0B1220] lg:visible lg:static lg:w-auto lg:rounded-none lg:border-none lg:bg-transparent lg:p-0 lg:opacity-100 lg:backdrop-blur-none lg:dark:bg-transparent transition-[opacity,top,transform] ${
                     navbarOpen
                       ? "visible top-full opacity-100 translate-y-0 scale-100 animate-[menuIn_.18s_ease-out_forwards]"
                       : "invisible top-[120%] opacity-0 translate-y-2 scale-[0.99]"
@@ -111,7 +134,7 @@ const Header = () => {
                               </span>
                             </button>
                             <div
-                              className={`submenu dark:bg-[#0B1220] relative top-full left-0 rounded-xl bg-white/90 p-2 backdrop-blur-xl transition-[top,opacity,transform] duration-300 lg:invisible lg:absolute lg:top-[110%] lg:block lg:w-[250px] lg:p-4 lg:opacity-0 lg:shadow-lg lg:group-hover:visible lg:group-hover:top-full lg:group-hover:opacity-100 lg:group-hover:translate-y-0 lg:translate-y-1 lg:group-hover:animate-[dropdownIn_.18s_ease-out_forwards] ${
+                              className={`submenu relative top-full left-0 rounded-xl bg-white/90 p-2 backdrop-blur-xl transition-[top,opacity,transform] duration-300 dark:bg-[#0B1220] lg:invisible lg:absolute lg:top-[110%] lg:block lg:w-[250px] lg:bg-white lg:p-4 lg:opacity-0 lg:shadow-lg lg:backdrop-blur-none lg:dark:bg-[#0B1220] lg:group-hover:visible lg:group-hover:top-full lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:translate-y-1 lg:group-hover:animate-[dropdownIn_.18s_ease-out_forwards] ${
                                 openIndex === index ? "block animate-[dropdownIn_.18s_ease-out_forwards]" : "hidden"
                               }`}
                             >
@@ -135,48 +158,100 @@ const Header = () => {
                 </nav>
               </div>
 
-              <div className="-translate-y-1 flex items-center justify-end pr-16 opacity-0 animate-[itemIn_1s_ease-out_forwards] lg:-translate-y-1.5 lg:pr-0">
+              <div className="flex translate-y-0.5 items-center justify-end gap-3 pr-16 opacity-0 animate-[itemIn_1s_ease-out_forwards] lg:translate-y-0 lg:pr-0">
                 {!isAuthed ? (
                   <div className="hidden items-center gap-3 md:flex">
                     <Link href="/signin" className="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-6 py-2.5 text-sm font-semibold text-gray-900 shadow-sm transition duration-300 hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10">Sign In</Link>
                     <Link href="/signup" className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition duration-300 hover:bg-blue-500 active:scale-[0.98]">Sign Up</Link>
                   </div>
                 ) : (
-                  <div className="hidden md:block">
+                  <div ref={accountMenuRef} className="relative hidden md:block">
                     <button
-                      onClick={() => setUserMenuOpen(true)}
-                      className="inline-flex items-center gap-3 rounded-full border border-gray-200 bg-white px-5 py-2 text-base font-semibold text-gray-900 shadow-sm transition duration-200 hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+                      type="button"
+                      onClick={() => setUserMenuOpen((open) => !open)}
+                      aria-expanded={userMenuOpen}
+                      aria-haspopup="menu"
+                      className="inline-flex h-10 items-center gap-2 rounded-full border border-transparent bg-gray-100/80 px-2.5 pr-3 text-sm transition duration-200 hover:bg-gray-200/80 dark:bg-white/10 dark:hover:bg-white/15"
                     >
-                      <span className="h-2.5 w-2.5 rounded-full bg-green-500 animate-[pulseDot_1.8s_ease-in-out_infinite]" />
-                      <span className="max-w-[120px] truncate">{displayName || roleName}</span>
-                      <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-600 dark:bg-blue-600/20 dark:text-blue-400">{roleName}</span>
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-primary shadow-sm dark:bg-[#0B1220] dark:text-blue-300">
+                        {userInitials}
+                      </span>
+                      <span className="max-w-[130px] truncate font-semibold text-gray-900 dark:text-white">
+                        {displayName || roleName}
+                      </span>
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        className={`shrink-0 text-gray-400 transition-transform duration-200 ${
+                          userMenuOpen ? "rotate-180" : ""
+                        }`}
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="m7 10 5 5 5-5"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </button>
+                    <div
+                      role="menu"
+                      className={`absolute right-0 top-full z-50 mt-3 w-56 overflow-hidden rounded-2xl border border-gray-200 bg-white p-2 shadow-xl shadow-black/10 transition duration-150 dark:border-white/10 dark:bg-[#111827] ${
+                        userMenuOpen
+                          ? "visible translate-y-0 opacity-100"
+                          : "invisible -translate-y-1 opacity-0"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-4 border-b border-gray-100 px-3 py-3 dark:border-white/10">
+                        <p className="min-w-0 flex-1 truncate text-sm font-bold text-gray-900 dark:text-white">
+                          {displayName || "User"}
+                        </p>
+                        <span className="shrink-0 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-bold text-primary dark:bg-primary/15 dark:text-blue-300">
+                          {roleName}
+                        </span>
+                      </div>
+
+                      <Link
+                        href={profileHref}
+                        role="menuitem"
+                        onClick={closeAll}
+                        className="mt-2 flex w-full items-center justify-between gap-4 rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-white/5"
+                      >
+                        <span>My Profile</span>
+                        <span className="text-gray-400">›</span>
+                      </Link>
+
+                      <Link
+                        href="/auth/resetPassword"
+                        role="menuitem"
+                        onClick={closeAll}
+                        className="flex w-full items-center justify-between gap-4 rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-white/5"
+                      >
+                        <span>Reset Password</span>
+                        <span className="text-gray-400">›</span>
+                      </Link>
+
+                      <button
+                        type="button"
+                        role="menuitem"
+                        onClick={logout}
+                        className="mt-2 flex w-full items-center justify-center rounded-xl bg-red-600 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-red-500"
+                      >
+                        Logout
+                      </button>
+                    </div>
                   </div>
                 )}
-                <div className="ml-3"><ThemeToggler /></div>
+                <ThemeToggler />
               </div>
             </div>
           </div>
         </div>
       </header>
-
-      <div className={`fixed inset-0 z-[100] bg-[#0B0F19]/40 backdrop-blur-sm transition-all duration-300 ${userMenuOpen ? "visible opacity-100" : "invisible opacity-0"}`} onClick={closeAll} />
-      <div className={`fixed top-0 right-0 z-[101] flex h-screen w-[320px] flex-col overflow-y-auto border-l border-white/20 bg-white/90 shadow-2xl backdrop-blur-2xl transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] dark:border-white/10 dark:bg-[#0B0F19]/90 ${userMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
-        <div className="flex items-center justify-between border-b border-gray-200 p-6 dark:border-white/10">
-          <h4 className="text-lg font-bold text-gray-900 dark:text-white">Account</h4>
-          <button onClick={closeAll} className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition hover:bg-gray-200 dark:bg-white/5 dark:text-gray-400">✕</button>
-        </div>
-        <div className="flex flex-col items-center p-8 text-center">
-          <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-tr from-blue-600 to-blue-400 text-2xl font-bold text-white shadow-lg">{userInitials}</div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white">{displayName || "User"}</h3>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Role: <span className="font-semibold text-blue-600 dark:text-blue-400">{roleName}</span></p>
-        </div>
-        <div className="flex flex-1 flex-col gap-2 px-6">
-          <Link href={profileHref} onClick={closeAll} className="flex items-center gap-4 rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5">My Profile</Link>
-          <Link href="/auth/resetPassword" onClick={closeAll} className="flex items-center gap-4 rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5">Reset Password</Link>
-          <button onClick={logout} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-3.5 text-sm font-semibold text-white hover:bg-red-500">Logout</button>
-        </div>
-      </div>
 
       <style jsx global>{`
         @keyframes headerIn { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
